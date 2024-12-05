@@ -14,7 +14,7 @@ const pool = mysql.createPool({
   host: "3.133.12.47",
   user: "yeeun",
   password: "cst336",
-  database: "quote_app",
+  database: "foodfriend_app",
   connectionLimit: 10,
   waitForConnections: true,
 });
@@ -34,9 +34,57 @@ app.get("/", async (req, res) => {
   res.render("home");
 });
 
+// logout
+app.get("/logout", isAuthenticated, async (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+});
+
+// signup get
+app.get("/signup", async (req, res) => {
+  res.render("signup");
+});
+
+// login get
 app.get("/login", async (req, res) => {
   res.render("login");
 });
+
+// login post
+app.post("/login", async (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+
+  let passwordHash = ``;
+
+  let sql = `SELECT * 
+            FROM admin 
+            WHERE username = ?`;
+  let sqlParams = [username];
+  const [rows] = await conn.query(sql, sqlParams);
+  if (rows.length > 0) {
+    passwordHash = rows[0].password;
+  }
+
+  const match = await bcrypt.compare(password, passwordHash);
+
+  if (match) {
+    req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
+    req.session.authenticated = true;
+    res.redirect("/");
+  } else {
+    res.redirect("/login");
+  }
+});
+
+// Middleware
+function isAuthenticated(req, res, next) {
+  if (req.session.authenticated) {
+    next();
+  } else {
+    res.redirect("/");
+  }
+}
 
 // db
 app.get("/dbTest", async (req, res) => {
