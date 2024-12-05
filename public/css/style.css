@@ -32,6 +32,10 @@ html {
   }
 }
 
+.menu_active {
+  color: #3cb371;
+}
+
 .navbar_right {
   display: flex;
   gap: 20px;

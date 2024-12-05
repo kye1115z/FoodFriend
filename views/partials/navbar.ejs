@@ -20,3 +20,15 @@
     </button>
   </div>
 </div>
+
+<script>
+  const currentPath = window.location.pathname;
+
+  const menuItems = document.querySelectorAll(".menu_item");
+
+  menuItems.forEach((item) => {
+    if (item.getAttribute("href") === currentPath) {
+      item.classList.add("menu_active");
+    }
+  });
+</script>
