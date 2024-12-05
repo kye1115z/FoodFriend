@@ -34,18 +34,49 @@ app.get("/", async (req, res) => {
   res.render("home");
 });
 
-// logout
+// // logout
 app.get("/logout", isAuthenticated, async (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
 
-// signup get
+// // signup get
 app.get("/signup", async (req, res) => {
   res.render("signup");
 });
 
-// login get
+// signup post
+app.post("/signup", async (req, res) => {
+  const { username, firstname, lastname, email, password, repassword } =
+    req.body;
+
+  if (password !== repassword) {
+    return res.status(400).send("Passwords do not match.");
+  }
+
+  try {
+    let sql = `SELECT * FROM admin WHERE username = ? OR email = ?`;
+    let sqlParams = [username, email];
+    const [rows] = await conn.query(sql, sqlParams);
+
+    if (rows.length > 0) {
+      return res.status(400).send("Username or email already exists.");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    sql = `INSERT INTO admin (username, firstName, lastName, email, password) VALUES (?, ?, ?, ?, ?)`;
+    sqlParams = [username, firstname, lastname, email, hashedPassword];
+    await conn.query(sql, sqlParams);
+
+    res.status(201).send("User created successfully!");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred during signup.");
+  }
+});
+
+// // login get
 app.get("/login", async (req, res) => {
   res.render("login");
 });
@@ -64,6 +95,8 @@ app.post("/login", async (req, res) => {
   const [rows] = await conn.query(sql, sqlParams);
   if (rows.length > 0) {
     passwordHash = rows[0].password;
+  } else {
+    return res.status(400).send("Invalid username or password.");
   }
 
   const match = await bcrypt.compare(password, passwordHash);
@@ -71,9 +104,9 @@ app.post("/login", async (req, res) => {
   if (match) {
     req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
     req.session.authenticated = true;
-    res.redirect("/");
+    res.status(200).send("Login successful!");
   } else {
-    res.redirect("/login");
+    res.status(400).send("Invalid username or password.");
   }
 });
 

@@ -60,6 +60,11 @@
   outline: none;
 }
 
+.login_input::placeholder {
+  color: #bebebe;
+  font-weight: light;
+}
+
 .bottom_caption {
   color: #a1a1a1;
 }
@@ -67,4 +72,20 @@
 .link_caption {
   margin-left: 10px;
   color: #3cb371;
+}
+
+/* signup */
+.signup_title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+.signup_form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 45px;
+  gap: 40px;
 }

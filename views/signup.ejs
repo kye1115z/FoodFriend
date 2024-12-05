@@ -8,27 +8,67 @@
     <header><%- include("partials/navbar.ejs") %></header>
     <main class="login_main">
       <div class="login_container">
-        <img src="images/food.svg" alt="login_image" />
+        <img src="images/signup_food.svg" alt="login_image" />
         <div class="login_right_box">
-          <p class="login_title">Welcome to the table</p>
-          <form class="login_form" method="post">
+          <p class="signup_title">Want to join our Family</p>
+          <form class="signup_form" method="post">
             <div class="input_container">
               <div class="input_box">
                 <img
                   src="images/userIcon.svg"
-                  alt="user icon"
+                  alt="signup_icon"
                   class="input_icon"
                 />
                 <input
                   name="username"
                   id="username_input"
                   class="login_input"
+                  placeholder="User Name"
+                />
+              </div>
+              <div class="input_box">
+                <img
+                  src="images/firstnameIcon.svg"
+                  alt="signup_icon"
+                  class="input_icon"
+                />
+                <input
+                  name="firstname"
+                  id="firstname_input"
+                  class="login_input"
+                  placeholder="First Name"
+                />
+              </div>
+              <div class="input_box">
+                <img
+                  src="images/lastnameIcon.svg"
+                  alt="signup_icon"
+                  class="input_icon"
+                />
+                <input
+                  name="lastname"
+                  id="lastname_input"
+                  class="login_input"
+                  placeholder="Last Name"
+                />
+              </div>
+              <div class="input_box">
+                <img
+                  src="images/emailIcon.svg"
+                  alt="signup_icon"
+                  class="input_icon"
+                />
+                <input
+                  name="email"
+                  id="email_input"
+                  class="login_input"
+                  placeholder="otter@csumb.edu"
                 />
               </div>
               <div class="input_box">
                 <img
                   src="images/passwordIcon.svg"
-                  alt="user icon"
+                  alt="signup_icon"
                   class="input_icon"
                 />
                 <input
@@ -36,17 +76,33 @@
                   id="password_input"
                   class="login_input"
                   type="password"
+                  placeholder="Password"
+                />
+              </div>
+              <div class="input_box">
+                <img
+                  src="images/passwordIcon.svg"
+                  alt="signup_icon"
+                  class="input_icon"
+                />
+                <input
+                  name="repassword"
+                  id="repassword_input"
+                  class="login_input"
+                  type="password"
+                  placeholder="Repeat Password"
                 />
               </div>
             </div>
-            <button class="big_btn green_btn">Log in</button>
+            <button class="big_btn green_btn">Sign Up</button>
           </form>
           <p class="bottom_caption">
-            Don't have an account yet?
-            <a href="#" class="link_caption">Sign up</a>
+            Already have an account?
+            <a href="/login" class="link_caption">Log in</a>
           </p>
         </div>
       </div>
     </main>
+    <script src="js/signup.js"></script>
   </body>
 </html>
