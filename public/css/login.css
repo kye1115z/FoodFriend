@@ -1,11 +1,13 @@
 .login_main {
+  display: flex;
+  justify-content: center;
   padding: 57px 121px;
 }
 
 .login_container {
   display: flex;
   gap: 40px;
-  width: 100%;
+  width: 80%;
   padding: 37px;
   background: #ffffff;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
