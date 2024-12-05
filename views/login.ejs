@@ -8,7 +8,7 @@
     <header><%- include("partials/navbar.ejs") %></header>
     <main class="login_main">
       <div class="login_container">
-        <img src="images/food.svg" alt="login_image" />
+        <img src="images/login_food.svg" alt="login_image" />
         <div class="login_right_box">
           <p class="login_title">Welcome to the table</p>
           <form class="login_form" method="post">
@@ -16,26 +16,25 @@
               <div class="input_box">
                 <img
                   src="images/userIcon.svg"
-                  alt="user icon"
+                  alt="login_icon"
                   class="input_icon"
                 />
                 <input
                   name="username"
                   id="username_input"
                   class="login_input"
+                  placeholder="User Name"
                 />
               </div>
               <div class="input_box">
-                <img
-                  src="images/passwordIcon.svg"
-                  alt="user icon"
-                  class="input_icon"
-                />
+                <img src="images/passwordIcon.svg" alt="login_icon"
+                class="input_icon"" />
                 <input
                   name="password"
                   id="password_input"
                   class="login_input"
                   type="password"
+                  placeholder="Password"
                 />
               </div>
             </div>
@@ -43,10 +42,11 @@
           </form>
           <p class="bottom_caption">
             Don't have an account yet?
-            <a href="#" class="link_caption">Sign up</a>
+            <a href="/signup" class="link_caption">Sign up</a>
           </p>
         </div>
       </div>
     </main>
+    <script src="js/login.js"></script>
   </body>
 </html>
