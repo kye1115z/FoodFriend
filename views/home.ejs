@@ -20,6 +20,7 @@
             <p class="day">15</p>
           </div>
           <div class="cal_box">
+            <% if (isLoggedIn) { %>
             <div class="cal_item">
               <p class="mealType">Breakfast</p>
               <p class="cal">0</p>
@@ -35,6 +36,17 @@
               <p class="cal">0</p>
               <p class="kcal">kcal</p>
             </div>
+            <% } else { %>
+            <div class="login_notification">
+              <p>Want to track your meals?</p>
+              <button
+                class="big_btn green_btn"
+                onclick="window.location.href = '/login'"
+              >
+                Log in
+              </button>
+            </div>
+            <% } %>
           </div>
         </div>
       </section>
