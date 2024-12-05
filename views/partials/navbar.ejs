@@ -8,7 +8,14 @@
     <a href="#" class="menu_item">User</a>
   </div>
   <div class="navbar_right">
-    <!-- if logout? -->
+    <% if (isLoggedIn) { %>
+    <button class="search_btn">
+      <img src="images/searchIcon.svg" alt="search_icon" />
+    </button>
+    <div class="profile_bg">
+      <img src="images/profileEx.svg" alt="profile" />
+    </div>
+    <% } else { %>
     <button onclick="window.location.href='/login'" class="small_btn gray_btn">
       Log in
     </button>
@@ -18,17 +25,18 @@
     >
       Sign up
     </button>
+    <% } %>
   </div>
+
+  <script>
+    const currentPath = window.location.pathname;
+
+    const menuItems = document.querySelectorAll(".menu_item");
+
+    menuItems.forEach((item) => {
+      if (item.getAttribute("href") === currentPath) {
+        item.classList.add("menu_active");
+      }
+    });
+  </script>
 </div>
-
-<script>
-  const currentPath = window.location.pathname;
-
-  const menuItems = document.querySelectorAll(".menu_item");
-
-  menuItems.forEach((item) => {
-    if (item.getAttribute("href") === currentPath) {
-      item.classList.add("menu_active");
-    }
-  });
-</script>

@@ -30,14 +30,23 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = req.session.authenticated || false;
+  next();
+});
+
 app.get("/", async (req, res) => {
   res.render("home");
 });
 
 // // logout
 app.get("/logout", isAuthenticated, async (req, res) => {
-  req.session.destroy();
-  res.redirect("/");
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).send("Failed to logout.");
+    }
+    res.redirect("/");
+  });
 });
 
 // // signup get
