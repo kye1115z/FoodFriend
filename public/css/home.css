@@ -1,0 +1,105 @@
+.home_main {
+  padding: 55px 121px;
+}
+
+.greeting {
+  font-size: 40px;
+  margin-bottom: 100px;
+
+  span {
+    font-weight: bold;
+  }
+}
+
+.subtitle_box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.subtitle {
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.view_more {
+  text-decoration: none;
+  color: #34a853;
+  font-size: 20px;
+}
+
+.meal_box {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 100px;
+  width: 100%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.date_box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 55px;
+  border-right: 3px solid #ebebeb;
+}
+
+.month {
+  font-size: 40px;
+  font-weight: bold;
+  color: #34a853;
+  margin: 0;
+  padding: 0;
+}
+
+.day {
+  font-size: 100px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  line-height: 140px;
+}
+
+.cal_box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 55px 80px;
+}
+
+.cal_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+}
+
+.mealType {
+  font-size: 40px;
+  font-weight: bold;
+  color: #ebebeb;
+  margin: 0;
+  padding: 0;
+}
+
+.cal {
+  font-size: 100px;
+  font-weight: bold;
+  margin: 0;
+  margin-top: 25px;
+  padding: 0;
+  line-height: 100px;
+}
+
+.kcal {
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
+  color: #bebebe;
+}

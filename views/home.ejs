@@ -2,9 +2,50 @@
 <html lang="en">
   <head>
     <%- include("partials/head.ejs") %>
+    <link href="/css/home.css" rel="stylesheet" />
+    <link href="/css/card.css" rel="stylesheet" />
   </head>
   <body>
     <header><%- include("partials/navbar.ejs") %></header>
-    <main></main>
+    <main class="home_main">
+      <p class="greeting"><%=greeting%>,<br /><span>Otter 👋</span></p>
+      <section class="meal_section">
+        <div class="subtitle_box">
+          <p class="subtitle">Meal Log</p>
+          <a href="#" class="view_more">View more</a>
+        </div>
+        <div class="meal_box">
+          <div class="date_box">
+            <p class="month">Nov</p>
+            <p class="day">15</p>
+          </div>
+          <div class="cal_box">
+            <div class="cal_item">
+              <p class="mealType">Breakfast</p>
+              <p class="cal">0</p>
+              <p class="kcal">kcal</p>
+            </div>
+            <div class="cal_item">
+              <p class="mealType">Lunch</p>
+              <p class="cal">0</p>
+              <p class="kcal">kcal</p>
+            </div>
+            <div class="cal_item">
+              <p class="mealType">Dinner</p>
+              <p class="cal">0</p>
+              <p class="kcal">kcal</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="recipe_section">
+        <div class="subtitle_box">
+          <p class="subtitle">Recommended Recipe</p>
+          <a href="#" class="view_more">View more</a>
+        </div>
+        <div class="recipes_container" id="recipes_container"></div>
+      </section>
+    </main>
+    <script src="js/card.js"></script>
   </body>
 </html>

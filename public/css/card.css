@@ -1,0 +1,78 @@
+.recipes_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2%;
+  justify-content: center;
+}
+.recipe_card {
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  width: 31.842%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.recipe_card img {
+  width: 100%;
+  border-radius: 20px 20px 0px 0px;
+}
+
+.save_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: white;
+  border: none;
+  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.save_button img {
+  width: 17px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 0;
+}
+
+.recipe_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  padding: 20px;
+}
+
+.recipe_left {
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe_name {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ebebeb;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.profile img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.rating {
+  color: #3cb371;
+}

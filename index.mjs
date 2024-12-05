@@ -2,6 +2,7 @@ import express, { query } from "express";
 import mysql from "mysql2/promise";
 import bcrypt from "bcrypt";
 import session from "express-session";
+import moment from "moment-timezone";
 
 const app = express();
 
@@ -36,7 +37,8 @@ app.use((req, res, next) => {
 });
 
 app.get("/", async (req, res) => {
-  res.render("home");
+  const greeting = getGreeting();
+  res.render("home", { greeting });
 });
 
 // // logout
@@ -125,6 +127,22 @@ function isAuthenticated(req, res, next) {
     next();
   } else {
     res.redirect("/");
+  }
+}
+
+// function
+function getGreeting() {
+  const currentTime = moment.tz("America/Los_Angeles");
+  const hour = currentTime.hour();
+
+  if (hour >= 6 && hour < 12) {
+    return "Good Morning";
+  } else if (hour >= 12 && hour < 18) {
+    return "Good Afternoon";
+  } else if (hour >= 18 && hour < 21) {
+    return "Good Evening";
+  } else {
+    return "Good Night";
   }
 }
 
