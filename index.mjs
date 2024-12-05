@@ -121,6 +121,11 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// Meal Log Mainpage Get
+app.get("/meallog", async (req, res) => {
+  res.render("mealLog");
+});
+
 // Middleware
 function isAuthenticated(req, res, next) {
   if (req.session.authenticated) {

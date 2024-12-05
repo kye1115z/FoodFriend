@@ -3,7 +3,7 @@
   <head>
     <%- include("partials/head.ejs") %>
     <link href="/css/home.css" rel="stylesheet" />
-    <link href="/css/card.css" rel="stylesheet" />
+    <link href="/css/recipeCard.css" rel="stylesheet" />
   </head>
   <body>
     <header><%- include("partials/navbar.ejs") %></header>
@@ -12,7 +12,7 @@
       <section class="meal_section">
         <div class="subtitle_box">
           <p class="subtitle">Meal Log</p>
-          <a href="#" class="view_more">View more</a>
+          <a href="/meallog" class="view_more">View more</a>
         </div>
         <div class="meal_box">
           <div class="date_box">
@@ -58,6 +58,6 @@
         <div class="recipes_container" id="recipes_container"></div>
       </section>
     </main>
-    <script src="js/card.js"></script>
+    <script src="js/recipeCard.js"></script>
   </body>
 </html>

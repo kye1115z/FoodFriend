@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <link href="/css/meallog.css" rel="stylesheet" />
+    <link href="/css/mealCard.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header><%- include("partials/navbar.ejs") %></header>
+    <main class="mealLog_main">
+      <section class="calendar_section">
+        <div class="calendar_wrapper">
+          <div class="calendar">
+            <button class="arrow left">
+              <img src="images/leftArrowIcon.svg" alt="left" />
+            </button>
+            <div class="days"></div>
+            <button class="arrow right">
+              <img src="images/rightArrowIcon.svg" alt="right" />
+            </button>
+          </div>
+          <div class="date_select">
+            <input type="date" id="date_input" />
+            <button class="date_btn">Search</button>
+          </div>
+        </div>
+      </section>
+      <section class="mealLog_section">
+        <div class="meal_wrapper">
+          <p class="mealType">Breakfast</p>
+          <div class="card_wrapper">
+            <div class="meals_container" id="meals_container">
+              <button class="add_card">
+                <img src="images/addIcon.svg" alt="add_icon" />
+                <p class="add_item_p">Add Item</p>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="meal_wrapper">
+          <p class="mealType">Lunch</p>
+          <div class="card_wrapper">
+            <div class="meals_container" id="meals_container">
+              <button class="add_card">
+                <img src="images/addIcon.svg" alt="add_icon" />
+                <p class="add_item_p">Add Item</p>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="meal_wrapper">
+          <p class="mealType">Dinner</p>
+          <div class="card_wrapper">
+            <div class="meals_container" id="meals_container">
+              <button class="add_card">
+                <img src="images/addIcon.svg" alt="add_icon" />
+                <p class="add_item_p">Add Item</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="js/mealLog.js"></script>
+    <script src="js/mealCard.js"></script>
+  </body>
+</html>
