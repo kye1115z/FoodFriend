@@ -1,0 +1,44 @@
+.addMeal_main {
+  padding-bottom: 200px;
+}
+
+.addMeal_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 121px;
+  border-top: 1px solid #d9d9d9;
+  border-bottom: 1px solid #d9d9d9;
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+.addMeal_title {
+  font-size: 35px;
+  color: #333333;
+  font-weight: bold;
+  margin: 0;
+}
+
+#add_menu {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 50px 420px;
+}
+
+.meal_input_box {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 25px;
+  }
+}
+
+.eating_time_box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

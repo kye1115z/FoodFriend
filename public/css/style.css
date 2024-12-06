@@ -89,3 +89,55 @@ html {
   border-radius: 50%;
   background-color: #ebebeb;
 }
+
+/* input */
+.basic_input {
+  height: 58px;
+  outline: none;
+  border: none;
+  border: 2px solid #bebebe;
+  border-radius: 8px;
+  margin-top: 13px;
+  font-size: 20px;
+  padding: 1rem;
+}
+
+.basic_input:focus {
+  border-color: #3cb371;
+}
+
+.basic_textarea {
+  width: 100%;
+  outline: none;
+  border: none;
+  border: 2px solid #bebebe;
+  border-radius: 8px;
+  margin-top: 13px;
+  font-size: 20px;
+  padding: 1rem;
+}
+
+.basic_textarea:focus {
+  border-color: #3cb371;
+}
+
+.basic_select {
+  height: 58px;
+  outline: none;
+  border: 2px solid #bebebe;
+  border-radius: 8px;
+  margin-top: 13px;
+  font-size: 20px;
+  padding: 1rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: white;
+  background-image: url("/images/dropdownIcon.svg");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}
+
+#basic_select:focus {
+  border-color: #3cb371;
+}

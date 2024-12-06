@@ -114,6 +114,7 @@ app.post("/login", async (req, res) => {
 
   if (match) {
     req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
+    req.session.userId = rows[0].userId;
     req.session.authenticated = true;
     res.status(200).send("Login successful!");
   } else {
@@ -122,8 +123,155 @@ app.post("/login", async (req, res) => {
 });
 
 // Meal Log Mainpage Get
-app.get("/meallog", async (req, res) => {
-  res.render("mealLog");
+app.get("/meallog", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+  res.render("mealLog", { userId });
+});
+
+// Add Meal Get
+app.get("/meallog-create", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+
+  res.render("addMeal", { userId });
+});
+
+// Add Meal Post
+app.post("/meallog-create", isAuthenticated, async (req, res) => {
+  const {
+    userId,
+    menu_name,
+    meal_photo,
+    eating_time_hour,
+    eating_time_minute,
+    time_format,
+    kcal,
+    mealType,
+  } = req.body;
+
+  try {
+    let hour = parseInt(eating_time_hour);
+    let minute = parseInt(eating_time_minute);
+
+    if (time_format === "PM" && hour !== 12) {
+      hour += 12;
+    } else if (time_format === "AM" && hour === 12) {
+      hour = 0;
+    }
+
+    const eatingTime = moment()
+      .set({ hour, minute, second: 0, millisecond: 0 })
+      .format("YYYY-MM-DD HH:mm:ss");
+
+    const sql = `INSERT INTO meals (menuName, mealPhoto, eatingTime, calories, mealType, userId) VALUES (?, ?, ?, ?, ?, ?)`;
+    const sqlParams = [
+      menu_name,
+      meal_photo,
+      eatingTime,
+      kcal,
+      mealType,
+      userId,
+    ];
+
+    const conn = await pool.getConnection();
+    await conn.query(sql, sqlParams);
+    conn.release();
+
+    res.status(200).send("Meal successfully added!");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while adding the meal.");
+  }
+});
+
+// Edit Meal Get
+app.get("/meallog-edit", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+  const mealId = req.query.mealId;
+
+  try {
+    let sql = `SELECT * 
+            FROM meals
+            WHERE id = ?`;
+    let [mealData] = await conn.query(sql, [mealId]);
+
+    const eatingTime = new Date(mealData[0].eatingTime);
+    const hours = eatingTime.getHours();
+    const minutes = eatingTime.getMinutes();
+    const isPM = hours >= 12; // PM인지 여부
+    const formattedHour = hours % 12 || 12; // 12시간 형식으로 변환 (0 -> 12)
+    const formattedMinute = minutes < 10 ? `0${minutes}` : minutes;
+
+    const timeFormat = isPM ? "PM" : "AM";
+
+    res.render("editMeal", {
+      userId,
+      mealData: mealData[0],
+      eatingTimeHour: formattedHour,
+      eatingTimeMinute: formattedMinute,
+      timeFormat: timeFormat,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while retrieving meals data.");
+  }
+});
+
+// Edit Meal Post
+app.post("/meallog-edit", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+
+  const {
+    menu_name,
+    meal_photo,
+    eating_time_hour,
+    eating_time_minute,
+    time_format,
+    kcal,
+    mealType,
+    mealId,
+  } = req.body;
+
+  try {
+    let hour = parseInt(eating_time_hour);
+    let minute = parseInt(eating_time_minute);
+
+    if (time_format === "PM" && hour !== 12) {
+      hour += 12;
+    } else if (time_format === "AM" && hour === 12) {
+      hour = 0;
+    }
+
+    const eatingTime = moment()
+      .set({ hour, minute, second: 0, millisecond: 0 })
+      .format("YYYY-MM-DD HH:mm:ss");
+
+    const sql = `UPDATE meals 
+      SET menuName = ?, mealPhoto = ?, eatingTime = ?, calories = ?, mealType = ? 
+      WHERE id = ? AND userId = ?`;
+
+    const sqlParams = [
+      menu_name,
+      meal_photo,
+      eatingTime,
+      kcal,
+      mealType,
+      mealId,
+      userId,
+    ];
+
+    const conn = await pool.getConnection();
+    const [result] = await conn.query(sql, sqlParams);
+    conn.release();
+
+    if (result.affectedRows > 0) {
+      res.status(200).send("Meal successfully updated!");
+    } else {
+      res.status(400).send("No meal found to update or user mismatch.");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while updating the meal.");
+  }
 });
 
 // Middleware

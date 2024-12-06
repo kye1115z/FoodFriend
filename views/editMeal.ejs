@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <link href="/css/addMeal.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header><%- include("partials/navbar.ejs") %></header>
+    <main class="addMeal_main">
+      <section class="addMeal_header">
+        <p class="addMeal_title">Edit Menu</p>
+        <button class="small_btn green_btn" id="save_btn">Save</button>
+      </section>
+      <form id="add_menu" method="post">
+        <input type="hidden" name="userId" value="<%= mealData.userId %>" />
+        <input type="hidden" name="mealId" value="<%= mealData.id %>" />
+        <div class="meal_input_box">
+          <label for="menu_name_input">Menu:</label>
+          <input
+            class="basic_input"
+            id="menu_name_input"
+            name="menu_name"
+            value="<%= mealData.menuName %>"
+            required
+          />
+        </div>
+        <div class="meal_input_box">
+          <label for="meal_photo_input">Meal Photo:</label>
+          <textarea
+            class="basic_textarea"
+            id="meal_photo_input"
+            name="meal_photo"
+            required
+          >
+<%= mealData.mealPhoto %></textarea
+          >
+        </div>
+        <div class="meal_input_box">
+          <label for="eating_time">Eating Time:</label>
+          <div class="eating_time_box">
+            <input
+              class="basic_input"
+              id="eating_time_hour"
+              name="eating_time_hour"
+              type="number"
+              min="1"
+              max="12"
+              placeholder="Hours 0"
+              style="width: 33%"
+              value="<%= eatingTimeHour %>"
+            />
+            <input
+              class="basic_input"
+              id="eating_time_minute"
+              name="eating_time_minute"
+              type="number"
+              min="0"
+              max="59"
+              placeholder="Minutes 0"
+              style="width: 33%"
+              value="<%= eatingTimeMinute %>"
+            />
+            <select
+              name="time_format"
+              class="basic_select"
+              id="time_format_select"
+              style="width: 33%"
+              value="<%= timeFormat %>"
+            >
+              <option value="AM">AM</option>
+              <option value="PM">PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="meal_input_box">
+          <label for="kcal_input">kcal:</label>
+          <input
+            class="basic_input"
+            id="kcal_input"
+            name="kcal"
+            type="number"
+            value="<%= mealData.calories %>"
+            required
+          />
+        </div>
+        <div class="meal_input_box">
+          <label for="meal_type_select">Meal Type:</label>
+          <select
+            name="mealType"
+            class="basic_select"
+            id="meal_type_select"
+            value="<%= mealData.mealType %>"
+            required
+          >
+            <option id="meal_type_option" value="breakfast">Breakfast</option>
+            <option id="meal_type_option" value="lunch">Lunch</option>
+            <option id="meal_type_option" value="dinner">Dinner</option>
+          </select>
+        </div>
+      </form>
+    </main>
+    <script src="js/editMeal.js"></script>
+  </body>
+</html>

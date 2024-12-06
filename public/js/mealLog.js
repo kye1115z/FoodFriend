@@ -5,7 +5,6 @@ const rightArrow = calendar.querySelector(".arrow.right");
 
 const addItemBtn = document.querySelector(".add_card");
 
-// Helper function: 날짜 형식 변환
 function getWeekDates(baseDate) {
   const startOfWeek = new Date(baseDate);
   startOfWeek.setDate(baseDate.getDate() - baseDate.getDay());
@@ -72,5 +71,5 @@ rightArrow.addEventListener("click", () => {
 
 // Add Item
 addItemBtn.addEventListener("click", () => {
-  window.location.href = "/meallog/create";
+  window.location.href = "/meallog-create";
 });
