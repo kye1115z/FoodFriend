@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <link href="/css/recipe.css" rel="stylesheet" />
+    <link href="/css/recipeCard.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header><%- include("partials/navbar.ejs") %></header>
+    <main class="recipe_main">
+      <section class="category_section">hi</section>
+      <section class="recipes_section">
+        <div class="title_box">
+          <p class="title">Results</p>
+          <p class="subtitle">Recipe > <span></span></p>
+        </div>
+        <div class="recipes_container" id="recipes_container"></div>
+      </section>
+    </main>
+    <script src="js/recipeCard.js"></script>
+  </body>
+</html>

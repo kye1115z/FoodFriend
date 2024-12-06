@@ -1,0 +1,33 @@
+.recipe_main {
+  padding: 10px 121px;
+}
+
+.category_section {
+  display: flex;
+  margin-bottom: 42px;
+}
+
+.recipes_section {
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+}
+
+.title_box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+.title {
+  font-size: 35px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #a1a1a1;
+  margin: 0;
+}

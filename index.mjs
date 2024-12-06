@@ -274,6 +274,11 @@ app.post("/meallog-edit", isAuthenticated, async (req, res) => {
   }
 });
 
+// recipe main
+app.get("/recipe", async (req, res) => {
+  res.render("recipe");
+});
+
 // Middleware
 function isAuthenticated(req, res, next) {
   if (req.session.authenticated) {
