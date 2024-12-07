@@ -8,7 +8,7 @@
   <body>
     <header><%- include("partials/navbar.ejs") %></header>
     <main class="home_main">
-      <p class="greeting"><%=greeting%>,<br /><span>Otter 👋</span></p>
+      <p class="greeting"><%=greeting%>,<br /><span><%=username%> 👋</span></p>
       <section class="meal_section">
         <div class="subtitle_box">
           <p class="subtitle">Meal Log</p>
@@ -23,17 +23,17 @@
             <% if (isLoggedIn) { %>
             <div class="cal_item">
               <p class="mealType">Breakfast</p>
-              <p class="cal">0</p>
+              <p class="cal"><%=totalCalories.breakfast%></p>
               <p class="kcal">kcal</p>
             </div>
             <div class="cal_item">
               <p class="mealType">Lunch</p>
-              <p class="cal">0</p>
+              <p class="cal"><%=totalCalories.lunch%></p>
               <p class="kcal">kcal</p>
             </div>
             <div class="cal_item">
               <p class="mealType">Dinner</p>
-              <p class="cal">0</p>
+              <p class="cal"><%=totalCalories.dinner%></p>
               <p class="kcal">kcal</p>
             </div>
             <% } else { %>
@@ -53,7 +53,7 @@
       <section class="recipe_section">
         <div class="subtitle_box">
           <p class="subtitle">Recommended Recipe</p>
-          <a href="#" class="view_more">View more</a>
+          <a href="/recipe" class="view_more">View more</a>
         </div>
         <div class="recipes_container" id="recipes_container"></div>
       </section>

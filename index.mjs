@@ -38,7 +38,35 @@ app.use((req, res, next) => {
 
 app.get("/", async (req, res) => {
   const greeting = getGreeting();
-  res.render("home", { greeting });
+  const username = req.session.username;
+  const userId = req.session.userId;
+
+  let sql = `SELECT calories, userId, mealType 
+            FROM meals
+            WHERE userId = ?`;
+  try {
+    let [mealData] = await conn.query(sql, [userId]);
+
+    const mealTypeCalories = mealData.reduce((totals, meal) => {
+      const { mealType, calories } = meal;
+      if (!totals[mealType]) {
+        totals[mealType] = 0;
+      }
+      totals[mealType] += calories;
+      return totals;
+    }, {});
+
+    const totalCalories = {
+      breakfast: mealTypeCalories.breakfast || 0,
+      lunch: mealTypeCalories.lunch || 0,
+      dinner: mealTypeCalories.dinner || 0,
+    };
+
+    res.render("home", { greeting, username, totalCalories });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while retrieving meal data.");
+  }
 });
 
 // // logout
@@ -113,7 +141,7 @@ app.post("/login", async (req, res) => {
   const match = await bcrypt.compare(password, passwordHash);
 
   if (match) {
-    req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
+    req.session.username = rows[0].username;
     req.session.userId = rows[0].userId;
     req.session.authenticated = true;
     res.status(200).send("Login successful!");
@@ -197,8 +225,8 @@ app.get("/meallog-edit", isAuthenticated, async (req, res) => {
     const eatingTime = new Date(mealData[0].eatingTime);
     const hours = eatingTime.getHours();
     const minutes = eatingTime.getMinutes();
-    const isPM = hours >= 12; // PM인지 여부
-    const formattedHour = hours % 12 || 12; // 12시간 형식으로 변환 (0 -> 12)
+    const isPM = hours >= 12;
+    const formattedHour = hours % 12 || 12;
     const formattedMinute = minutes < 10 ? `0${minutes}` : minutes;
 
     const timeFormat = isPM ? "PM" : "AM";
