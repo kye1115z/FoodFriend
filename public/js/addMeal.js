@@ -8,6 +8,9 @@ document.getElementById("save_btn").addEventListener("click", async (event) => {
     const data = {
       menu_name: formData.get("menu_name"),
       meal_photo: formData.get("meal_photo"),
+      eating_date_year: formData.get("eating_date_year"),
+      eating_date_month: formData.get("eating_date_month"),
+      eating_date_day: formData.get("eating_date_day"),
       eating_time_hour: formData.get("eating_time_hour"),
       eating_time_minute: formData.get("eating_time_minute"),
       time_format: formData.get("time_format"),

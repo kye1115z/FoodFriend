@@ -195,6 +195,9 @@ app.post("/meallog-create", isAuthenticated, async (req, res) => {
     userId,
     menu_name,
     meal_photo,
+    eating_date_year,
+    eating_date_month,
+    eating_date_day,
     eating_time_hour,
     eating_time_minute,
     time_format,
@@ -213,7 +216,15 @@ app.post("/meallog-create", isAuthenticated, async (req, res) => {
     }
 
     const eatingTime = moment()
-      .set({ hour, minute, second: 0, millisecond: 0 })
+      .set({
+        year: eating_date_year,
+        month: eating_date_month - 1,
+        date: eating_date_day,
+        hour,
+        minute,
+        second: 0,
+        millisecond: 0,
+      })
       .format("YYYY-MM-DD HH:mm:ss");
 
     const sql = `INSERT INTO meals (menuName, mealPhoto, eatingTime, calories, mealType, userId) VALUES (?, ?, ?, ?, ?, ?)`;
