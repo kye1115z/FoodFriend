@@ -1,39 +1,37 @@
-const meals = [
-  {
-    image: "https://via.placeholder.com/250x150",
-    name: "Avocado Egg Toast",
-    eatingTime: "08:30AM",
-    kcal: 100,
-  },
-  {
-    image: "https://via.placeholder.com/250x150",
-    name: "Cafe Latte",
-    eatingTime: "08:30AM",
-    kcal: 100,
-  },
-  {
-    image: "https://via.placeholder.com/250x150",
-    name: "Eggs in Hell",
-    eatingTime: "08:30AM",
-    kcal: 100,
-  },
-  // Add more recipes here
-];
+const breakfastContainer = document.getElementById("breakfast_container");
+const lunchContainer = document.getElementById("lunch_container");
+const dinnerContainer = document.getElementById("dinner_container");
 
-const container = document.getElementById("meals_container");
+function generateMealCards(meals, container) {
+  meals.forEach((meal) => {
+    const card = document.createElement("div");
+    card.className = "meal_card";
 
-// Function to generate recipe cards
-meals.forEach((meal) => {
-  const card = document.createElement("div");
-  card.className = "meal_card";
+    const formattedTime = new Date(meal.eatingTime).toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
 
-  card.innerHTML = `
-        <img src="${meal.image}" alt="${meal.name}">
-        <div class="meal_info">
-            <div class="menu_name">${meal.name}</div>
-            <div class="bottom_text">${meal.eatingTime} | ${meal.kcal} kcal</div>
-        </div>
-      `;
+    card.innerHTML = `
+      <img src="${meal.mealPhoto}" alt="${meal.menuName}">
+      <div class="meal_info">
+        <div class="menu_name">${meal.menuName}</div>
+        <div class="bottom_text">${formattedTime} | ${meal.calories} kcal</div>
+      </div>
+    `;
 
-  container.prepend(card);
+    container.prepend(card);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("/meallog/data")
+    .then((response) => response.json())
+    .then((data) => {
+      generateMealCards(data.breakfast, breakfastContainer);
+      generateMealCards(data.lunch, lunchContainer);
+      generateMealCards(data.dinner, dinnerContainer);
+    })
+    .catch((error) => console.error("Error fetching meal data:", error));
 });

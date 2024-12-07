@@ -152,8 +152,34 @@ app.post("/login", async (req, res) => {
 
 // Meal Log Mainpage Get
 app.get("/meallog", isAuthenticated, async (req, res) => {
+  res.render("mealLog");
+});
+
+// /meallog/data
+app.get("/meallog/data", isAuthenticated, async (req, res) => {
   const userId = req.session.userId;
-  res.render("mealLog", { userId });
+  let sql = `SELECT * FROM meals WHERE userId = ? ORDER BY eatingTime DESC`;
+
+  try {
+    let [mealData] = await conn.query(sql, [userId]);
+
+    const mealsByType = mealData.reduce(
+      (groupedMeals, meal) => {
+        const { mealType } = meal;
+        if (!groupedMeals[mealType]) {
+          groupedMeals[mealType] = [];
+        }
+        groupedMeals[mealType].push(meal);
+        return groupedMeals;
+      },
+      { breakfast: [], lunch: [], dinner: [] }
+    );
+
+    res.json(mealsByType);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while retrieving meal data.");
+  }
 });
 
 // Add Meal Get
