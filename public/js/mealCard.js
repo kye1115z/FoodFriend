@@ -1,6 +1,13 @@
+let userId = -1;
+let mealId = -1;
 const breakfastContainer = document.getElementById("breakfast_container");
 const lunchContainer = document.getElementById("lunch_container");
 const dinnerContainer = document.getElementById("dinner_container");
+
+const modal = document.getElementById("modal");
+const editBtn = document.getElementById("editBtn");
+const deleteBtn = document.getElementById("deleteBtn");
+const cancelBtn = document.getElementById("cancelBtn");
 
 function generateMealCards(meals, container) {
   meals.forEach((meal) => {
@@ -14,24 +21,67 @@ function generateMealCards(meals, container) {
     });
 
     card.innerHTML = `
-      <img src="${meal.mealPhoto}" alt="${meal.menuName}">
-      <div class="meal_info">
-        <div class="menu_name">${meal.menuName}</div>
-        <div class="bottom_text">${formattedTime} | ${meal.calories} kcal</div>
-      </div>
+    <img src="${meal.mealPhoto}" alt="${meal.menuName}">
+    <div class="meal_info">
+    <div class="top_info">
+    <div class="menu_name">${meal.menuName}</div>
+    <button class="threedots_box" onClick="handleThreedots(${meal.id})"></button>
+    </div>
+    <div class="bottom_text">${formattedTime} | ${meal.calories} kcal</div>
+    </div>
     `;
 
     container.prepend(card);
   });
 }
 
+function handleThreedots(currentMealId) {
+  mealId = currentMealId;
+  modal.style.display = "flex";
+}
+
+editBtn.addEventListener("click", () => {
+  window.location.href = `/meallog-edit?mealId=${mealId}`;
+  modal.style.display = "none";
+});
+
+deleteBtn.addEventListener("click", async () => {
+  try {
+    const response = await fetch("/meallog-delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ mealId }),
+    });
+
+    if (response.ok) {
+      const message = await response.text();
+      alert(message);
+      modal.style.display = "none";
+      window.location.reload();
+    } else {
+      const errorMessage = await response.text();
+      alert(`Error: ${errorMessage}`);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while deleting the meal.");
+  }
+});
+
+cancelBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   fetch("/meallog/data")
     .then((response) => response.json())
     .then((data) => {
-      generateMealCards(data.breakfast, breakfastContainer);
-      generateMealCards(data.lunch, lunchContainer);
-      generateMealCards(data.dinner, dinnerContainer);
+      userId = data.userId;
+      generateMealCards(data.mealsByType.breakfast, breakfastContainer);
+      generateMealCards(data.mealsByType.lunch, lunchContainer);
+      generateMealCards(data.mealsByType.dinner, dinnerContainer);
     })
     .catch((error) => console.error("Error fetching meal data:", error));
 });

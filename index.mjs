@@ -175,7 +175,7 @@ app.get("/meallog/data", isAuthenticated, async (req, res) => {
       { breakfast: [], lunch: [], dinner: [] }
     );
 
-    res.json(mealsByType);
+    res.json({ mealsByType: mealsByType, userId: userId });
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while retrieving meal data.");
@@ -336,6 +336,29 @@ app.post("/meallog-edit", isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while updating the meal.");
+  }
+});
+
+// Delete Meal Get
+app.delete("/meallog-delete", isAuthenticated, async (req, res) => {
+  const { mealId } = req.body; // 클라이언트에서 mealId를 전달받음
+
+  if (!mealId) {
+    return res.status(400).send("Meal ID is required");
+  }
+
+  try {
+    const sql = "DELETE FROM meals WHERE id = ?";
+    const [result] = await conn.query(sql, [mealId]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).send("Meal not found");
+    }
+
+    res.send("Meal deleted successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while deleting the meal.");
   }
 });
 
