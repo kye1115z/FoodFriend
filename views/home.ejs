@@ -50,13 +50,16 @@
           </div>
         </div>
       </section>
+      <% if (isLoggedIn) { %>
       <section class="recipe_section">
         <div class="subtitle_box">
           <p class="subtitle">Recommended Recipe</p>
           <a href="/recipe" class="view_more">View more</a>
         </div>
+
         <div class="recipes_container" id="recipes_container"></div>
       </section>
+      <% } %>
     </main>
     <script src="js/recipeCard.js"></script>
   </body>
