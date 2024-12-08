@@ -222,10 +222,16 @@ app.get("/meallog", isAuthenticated, async (req, res) => {
 // /meallog/data
 app.get("/meallog/data", isAuthenticated, async (req, res) => {
   const userId = req.session.userId;
-  let sql = `SELECT * FROM meals WHERE userId = ? ORDER BY eatingTime DESC`;
+  const { date } = req.query;
+
+  let sql = `
+    SELECT * FROM meals 
+    WHERE userId = ? AND DATE(eatingTime) = ? 
+    ORDER BY eatingTime DESC
+  `;
 
   try {
-    let [mealData] = await conn.query(sql, [userId]);
+    let [mealData] = await conn.query(sql, [userId, date]);
 
     const mealsByType = mealData.reduce(
       (groupedMeals, meal) => {
@@ -239,7 +245,7 @@ app.get("/meallog/data", isAuthenticated, async (req, res) => {
       { breakfast: [], lunch: [], dinner: [] }
     );
 
-    res.json({ mealsByType: mealsByType, userId: userId });
+    res.json({ mealsByType, userId });
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while retrieving meal data.");

@@ -75,13 +75,41 @@ cancelBtn.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("/meallog/data")
+  const today = new Date();
+  const todayString = today.toISOString().split("T")[0];
+  fetch(`/meallog/data?date=${todayString}`)
     .then((response) => response.json())
     .then((data) => {
       userId = data.userId;
+
       generateMealCards(data.mealsByType.breakfast, breakfastContainer);
       generateMealCards(data.mealsByType.lunch, lunchContainer);
       generateMealCards(data.mealsByType.dinner, dinnerContainer);
     })
     .catch((error) => console.error("Error fetching meal data:", error));
 });
+
+function fetchMealsByDate(dateString) {
+  const breakfastAddItem = breakfastContainer.querySelector(".add_card");
+  const lunchAddItem = lunchContainer.querySelector(".add_card");
+  const dinnerAddItem = dinnerContainer.querySelector(".add_card");
+
+  breakfastContainer.innerHTML = "";
+  lunchContainer.innerHTML = "";
+  dinnerContainer.innerHTML = "";
+
+  breakfastContainer.appendChild(breakfastAddItem);
+  lunchContainer.appendChild(lunchAddItem);
+  dinnerContainer.appendChild(dinnerAddItem);
+
+  fetch(`/meallog/data?date=${dateString}`)
+    .then((response) => response.json())
+    .then((data) => {
+      userId = data.userId;
+
+      generateMealCards(data.mealsByType.breakfast, breakfastContainer);
+      generateMealCards(data.mealsByType.lunch, lunchContainer);
+      generateMealCards(data.mealsByType.dinner, dinnerContainer);
+    })
+    .catch((error) => console.error("Error fetching meal data:", error));
+}

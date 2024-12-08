@@ -24,7 +24,6 @@ function getWeekDates(baseDate) {
   return weekDates;
 }
 
-// Helper function: 캘린더 렌더링
 function renderCalendar(baseDate) {
   const weekDates = getWeekDates(baseDate);
   const today = new Date();
@@ -43,7 +42,9 @@ function renderCalendar(baseDate) {
         .querySelectorAll(".day")
         .forEach((d) => d.classList.remove("selected"));
       dayDiv.classList.add("selected");
-      console.log(`Selected date: ${day.fullDate.toDateString()}`);
+
+      let selectedDate = day.fullDate.toISOString().split("T")[0];
+      fetchMealsByDate(selectedDate);
     });
 
     dayDiv.innerHTML = `
@@ -75,4 +76,14 @@ document.querySelectorAll(".add_card").forEach((button, index) => {
     console.log(`Add Item clicked for meal type ${index + 1}`);
     window.location.href = "/meallog-create";
   });
+});
+
+document.querySelector(".date_btn").addEventListener("click", () => {
+  const dateInput = document.querySelector("#date_input").value;
+
+  if (dateInput) {
+    fetchMealsByDate(dateInput);
+  } else {
+    alert("Please select a date.");
+  }
 });
