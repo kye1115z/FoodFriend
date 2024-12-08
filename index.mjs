@@ -365,6 +365,50 @@ app.get("/recipe", async (req, res) => {
   res.render("recipe");
 });
 
+app.get("/recipeDetails", isAuthenticated, async (req, res) => {
+  const recipeId = req.query.recipeId;
+  const username = req.session.username;
+
+  try {
+    let sql = `SELECT * FROM recipes WHERE recipeId = ?`;
+    let image_sql = `SELECT * FROM recipe_images WHERE recipeId = ?`;
+    let allergen_sql = `SELECT * FROM recipe_allergens WHERE recipeId = ?`;
+    let category_sql = `SELECT * FROM recipe_categories WHERE recipeId = ?`;
+    let ingredient_sql = `SELECT * FROM recipe_ingredients WHERE recipeId = ?`;
+    let instruction_sql = `SELECT * FROM recipe_instructions WHERE recipeId = ?`;
+
+    const [recipe] = await conn.query(sql, [recipeId]);
+    const [images] = await conn.query(image_sql, [recipeId]);
+    const [allergens] = await conn.query(allergen_sql, [recipeId]);
+    const [categories] = await conn.query(category_sql, [recipeId]);
+    const [ingredients] = await conn.query(ingredient_sql, [recipeId]);
+    const [instructions] = await conn.query(instruction_sql, [recipeId]);
+
+    const allergenNames = await conn.query(
+      `SELECT name FROM allergens WHERE id IN (?)`,
+      [allergens.map((a) => a.allergenId)]
+    );
+    const categoryNames = await conn.query(
+      `SELECT name FROM categories WHERE id IN (?)`,
+      [categories.map((c) => c.categoryId)]
+    );
+
+    const recipeDetails = {
+      ...recipe[0],
+      image: images.length > 0 ? images[0].imageUrl : null,
+      allergens: allergenNames[0].map((a) => a.name),
+      categories: categoryNames[0].map((c) => c.name),
+      ingredients: ingredients.map((ingredient) => ingredient.ingredient),
+      instructions: instructions.map((instruction) => instruction.description),
+    };
+
+    res.render("recipeDetail", { recipe: recipeDetails, username: username });
+  } catch (error) {
+    console.error("Error fetching recipe details:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 app.get("/api/categories", async (req, res) => {
   try {
     const sql = "SELECT * FROM categories ORDER BY name";
@@ -382,26 +426,81 @@ app.get("/api/recipes", async (req, res) => {
     let sql = `SELECT * FROM recipes`;
     let image_sql = `SELECT * FROM recipe_images`;
     let favorites_sql = `SELECT * FROM favorites WHERE userId = ?`;
+    let allergen_sql = `SELECT * FROM recipe_allergens`;
+    let category_sql = `SELECT * FROM recipe_categories`;
+    let ingredient_sql = `SELECT * FROM recipe_ingredients`;
+    let instruction_sql = `SELECT * FROM recipe_instructions`;
+
     const [recipes] = await conn.query(sql);
     const [images] = await conn.query(image_sql);
     const [favorites] = await conn.query(favorites_sql, [userId]);
+    const [allergens] = await conn.query(allergen_sql);
+    const [categories] = await conn.query(category_sql);
+    const [ingredients] = await conn.query(ingredient_sql);
+    const [instructions] = await conn.query(instruction_sql);
 
     const favoriteRecipeIds = favorites.map((favorite) => favorite.recipeId);
 
-    const recipesWithImages = recipes.map((recipe) => {
+    const recipesWithDetails = recipes.map((recipe) => {
       const recipeImage = images.find(
         (img) => img.recipeId === recipe.recipeId
       );
+      const recipeAllergens = allergens
+        .filter((allergen) => allergen.recipeId === recipe.recipeId)
+        .map((allergen) => allergen.allergen);
+      const recipeCategories = categories
+        .filter((category) => category.recipeId === recipe.recipeId)
+        .map((category) => category.category);
+      const recipeIngredients = ingredients
+        .filter((ingredient) => ingredient.recipeId === recipe.recipeId)
+        .map((ingredient) => ingredient.ingredient);
+      const recipeInstructions = instructions
+        .filter((instruction) => instruction.recipeId === recipe.recipeId)
+        .map((instruction) => instruction.instruction);
+
       return {
         ...recipe,
         image: recipeImage ? recipeImage.imageUrl : null,
         saved: favoriteRecipeIds.includes(recipe.recipeId),
+        allergens: recipeAllergens,
+        categories: recipeCategories,
+        ingredients: recipeIngredients,
+        instructions: recipeInstructions,
       };
     });
 
-    res.json(recipesWithImages);
+    res.json(recipesWithDetails);
   } catch (error) {
     console.error("Error fetching recipes:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/api/recipes-edit", isAuthenticated, async (req, res) => {
+  const recipeId = req.query.recipeId;
+
+  try {
+    let ingredient_sql = `SELECT * FROM recipe_ingredients WHERE recipeId = ?`;
+    let instruction_sql = `SELECT * FROM recipe_instructions WHERE recipeId = ?`;
+
+    const [ingredients] = await conn.query(ingredient_sql, [recipeId]);
+    const [instructions] = await conn.query(instruction_sql, [recipeId]);
+
+    const recipeIngredients = ingredients.map(
+      (ingredient) => ingredient.ingredient
+    );
+    const recipeInstructions = instructions.map(
+      (instruction) => instruction.description
+    );
+
+    const recipeDetails = {
+      ingredients: recipeIngredients,
+      instructions: recipeInstructions,
+    };
+
+    res.json(recipeDetails);
+  } catch (error) {
+    console.error("Error fetching recipe details:", error);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -510,6 +609,137 @@ app.post("/recipe-create", async (req, res) => {
   } catch (err) {
     console.error("Error inserting recipe:", err);
     res.status(500).json({ success: false, error: "Failed to save recipe" });
+  } finally {
+    conn.release();
+  }
+});
+
+// Edit Recipe
+app.get("/recipe-edit", isAuthenticated, async (req, res) => {
+  const recipeId = req.query.recipeId;
+  const userId = req.session.userId;
+
+  try {
+    let sql = `SELECT * FROM recipes WHERE recipeId = ?`;
+    let image_sql = `SELECT * FROM recipe_images WHERE recipeId = ?`;
+    let favorites_sql = `SELECT * FROM favorites WHERE recipeId = ? AND userId = ?`;
+    let allergen_sql = `SELECT * FROM recipe_allergens WHERE recipeId = ?`;
+    let category_sql = `SELECT * FROM recipe_categories WHERE recipeId = ?`;
+    let ingredient_sql = `SELECT * FROM recipe_ingredients WHERE recipeId = ?`;
+    let instruction_sql = `SELECT * FROM recipe_instructions WHERE recipeId = ?`;
+
+    const [recipe] = await conn.query(sql, [recipeId]);
+    const [images] = await conn.query(image_sql, [recipeId]);
+    const [favorites] = await conn.query(favorites_sql, [recipeId, userId]);
+    const [allergens] = await conn.query(allergen_sql, [recipeId]);
+    const [categories] = await conn.query(category_sql, [recipeId]);
+    const [ingredients] = await conn.query(ingredient_sql, [recipeId]);
+    const [instructions] = await conn.query(instruction_sql, [recipeId]);
+
+    const [allAllergens] = await conn.query("SELECT * FROM allergens");
+    const [allCategories] = await conn.query("SELECT * FROM categories");
+
+    const recipeDetails = {
+      ...recipe[0],
+      image: images.length > 0 ? images[0].imageUrl : null,
+      saved: favorites.length > 0,
+      allergens: allergens,
+      categories: categories,
+      ingredients: ingredients.map((ingredient) => ingredient.ingredient),
+      instructions: instructions.map((instruction) => instruction.description),
+      allAllergens: allAllergens,
+      allCategories: allCategories,
+    };
+
+    res.render("editRecipe", { recipe: recipeDetails });
+  } catch (error) {
+    console.error("Error fetching recipe details:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// edit recipe post
+app.post("/recipe-edit", async (req, res) => {
+  const {
+    recipeId,
+    recipe_name,
+    recipe_photo,
+    recipe_description,
+    recipe_servings,
+    cooking_time_hour,
+    cooking_time_minute,
+    recipe_categories,
+    recipe_allergens,
+    recipe_ingredients,
+    instruction_steps,
+  } = req.body;
+
+  const cooking_time = `${cooking_time_hour}h ${cooking_time_minute}m`;
+
+  try {
+    await conn.query(
+      "UPDATE recipes SET menuName = ?, description = ?, servings = ?, cookingTime = ? WHERE recipeId = ?",
+      [recipe_name, recipe_description, recipe_servings, cooking_time, recipeId]
+    );
+
+    await conn.query(
+      "UPDATE recipe_images SET imageUrl = ? WHERE recipeId = ?",
+      [recipe_photo, recipeId]
+    );
+
+    await conn.query("DELETE FROM recipe_categories WHERE recipeId = ?", [
+      recipeId,
+    ]);
+    for (const category of recipe_categories) {
+      await conn.query(
+        "INSERT INTO recipe_categories (recipeId, categoryId) VALUES (?, ?)",
+        [recipeId, category]
+      );
+    }
+
+    await conn.query("DELETE FROM recipe_allergens WHERE recipeId = ?", [
+      recipeId,
+    ]);
+    for (const allergen of recipe_allergens) {
+      await conn.query(
+        "INSERT INTO recipe_allergens (recipeId, allergenId) VALUES (?, ?)",
+        [recipeId, allergen]
+      );
+    }
+
+    await conn.query("DELETE FROM recipe_ingredients WHERE recipeId = ?", [
+      recipeId,
+    ]);
+    for (const ingredient of recipe_ingredients) {
+      await conn.query(
+        "INSERT INTO recipe_ingredients (recipeId, ingredient) VALUES (?, ?)",
+        [recipeId, ingredient]
+      );
+    }
+
+    await conn.query("DELETE FROM recipe_instructions WHERE recipeId = ?", [
+      recipeId,
+    ]);
+
+    let stepOrder = 1;
+    for (const step of instruction_steps) {
+      if (step.instructionId) {
+        await conn.query(
+          "UPDATE recipe_instructions SET stepOrder = ?, description = ? WHERE instructionId = ? AND recipeId = ?",
+          [stepOrder++, step.description, step.instructionId, recipeId]
+        );
+      } else {
+        await conn.query(
+          "INSERT INTO recipe_instructions (recipeId, stepOrder, description) VALUES (?, ?, ?)",
+          [recipeId, stepOrder++, step.description]
+        );
+      }
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error updating recipe:", err);
+    res.status(500).json({ success: false, error: "Failed to update recipe" });
   } finally {
     conn.release();
   }

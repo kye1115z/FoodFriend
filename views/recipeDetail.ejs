@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <link href="/css/recipeDetail.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header><%- include("partials/navbar.ejs") %></header>
+    <main class="detail_main">
+      <p class="recipe_category_p">
+        Recipe > <span><%= recipe.categories.join(' / ') %></span>
+      </p>
+      <section class="recipe_section">
+        <div class="header_wrapper">
+          <div class="top">
+            <p class="menu_title"><%= recipe.menuName %></p>
+            <div class="right">
+              <button id="save_btn">
+                <img
+                  src="<%= recipe.saved ? 'images/saveL_checked.svg' : 'images/saveL.svg' %>"
+                  alt="save"
+                />
+              </button>
+              <button
+                id="threedots_btn"
+                data-recipe-id="<%= recipe.recipeId %>"
+              >
+                <img src="images/threedotsL.svg" alt="threedots" />
+              </button>
+            </div>
+          </div>
+          <div class="sub_info">
+            <img src="/images/profileExTiny.svg" alt="profile" />
+            <p class="username"><%= username %></p>
+          </div>
+        </div>
+        <div class="photo_box">
+          <img src="<%= recipe.image %>" alt="menu_phto" />
+        </div>
+        <div class="short_info_box">
+          <div class="short_info">
+            <p class="short_info_title">Cooking Time:</p>
+            <p class="short_info_desc"><%= recipe.cookingTime %></p>
+          </div>
+          <div class="short_info">
+            <p class="short_info_title">Serving:</p>
+            <p class="short_info_desc"><%= recipe.servings %> servings</p>
+          </div>
+        </div>
+        <p class="info_desc"><%= recipe.description %></p>
+        <div class="info_wrapper">
+          <p class="info_title">Ingredients:</p>
+          <div class="checkbox_list">
+            <% recipe.ingredients.forEach((ingredient, index) => { %>
+            <div class="ingredient_item">
+              <input
+                class="checkbox_input"
+                type="checkbox"
+                id="ingredient_<%= index %>"
+                name="ingredients"
+              />
+              <label class="checkbox_label" for="ingredient_<%= index %>"
+                ><%= ingredient %></label
+              >
+            </div>
+            <% }) %>
+          </div>
+        </div>
+        <div class="info_wrapper">
+          <p class="info_title">Instructions:</p>
+          <div class="inst_box">
+            <% recipe.instructions.forEach((inst, index) => { %>
+            <div class="inst_item">
+              <div class="inst_index"><%= index + 1 %></div>
+              <p class="inst_desc"><%= inst %></p>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+        <div class="info_wrapper">
+          <p class="info_title">Allergens:</p>
+          <p class="inst_desc"><%= recipe.allergens.join(', ') %></p>
+        </div>
+      </section>
+    </main>
+    <!-- modal -->
+    <div id="modal" class="modal">
+      <div class="modal_content">
+        <button id="editBtn" class="modal_button">Edit</button>
+        <button id="deleteBtn" class="modal_button">Delete</button>
+        <button id="cancelBtn" class="modal_button">Cancel</button>
+      </div>
+    </div>
+    <script src="js/recipeDetail.js"></script>
+  </body>
+</html>

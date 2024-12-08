@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <link href="/css/addMeal.css" rel="stylesheet" />
+    <link href="/css/addRecipe.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header><%- include("partials/navbar.ejs") %></header>
+    <main class="addMeal_main">
+      <section class="addMeal_header">
+        <p class="addMeal_title">Edit Recipe</p>
+        <button class="small_btn green_btn" id="save_btn">Save</button>
+      </section>
+      <form id="add_menu" method="post">
+        <input
+          type="hidden"
+          name="recipeId"
+          value="<%= recipe.recipeId %>"
+          id="recipeId"
+        />
+        <div class="meal_input_box">
+          <label for="recipe_name_input">Recipe Title:</label>
+          <input
+            class="basic_input"
+            id="recipe_name_input"
+            name="recipe_name"
+            value="<%= recipe.menuName %>"
+            required
+          />
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_photo_input">Recipe Photo:</label>
+          <textarea
+            class="basic_textarea"
+            id="recipe_photo_input"
+            name="recipe_photo"
+            required
+          >
+<%= recipe.image %></textarea
+          >
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_description">Description:</label>
+          <textarea
+            class="basic_textarea"
+            id="recipe_description"
+            name="recipe_description"
+            required
+          >
+<%= recipe.description %></textarea
+          >
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_ingredients">Ingredients:</label>
+          <div id="ingredients_container"></div>
+          <button type="button" id="add_ingredient_btn">
+            <img src="images/addIconSm.svg" alt="add_ingredient" />
+            Add Ingredient
+          </button>
+        </div>
+        <div class="meal_input_box">
+          <label for="instructions_container">Instructions:</label>
+          <div id="instructions_container"></div>
+          <button type="button" id="add_step_btn">
+            <img src="images/addIconSm.svg" alt="add_step" />
+            Add Step
+          </button>
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_servings">Servings:</label>
+          <input
+            class="basic_input"
+            id="recipe_servings"
+            name="recipe_servings"
+            placeholder="#"
+            value="<%= recipe.servings %>"
+            required
+          />
+        </div>
+        <div class="meal_input_box">
+          <label for="cooking_time">Cooking Time:</label>
+          <div class="cooking_time_box">
+            <input
+              class="basic_input"
+              id="cooking_time_hour"
+              name="cooking_time_hour"
+              type="number"
+              placeholder="Hours 0"
+              style="width: 49%"
+              value="<%= recipe.cookingTime && recipe.cookingTime.split(' ')[0].replace('h', '') || '' %>"
+            />
+            <input
+              class="basic_input"
+              id="cooking_time_minute"
+              name="cooking_time_minute"
+              type="number"
+              placeholder="Minutes 0"
+              min="0"
+              max="59"
+              style="width: 49%"
+              value="<%= recipe.cookingTime && recipe.cookingTime.split(' ')[1].replace('m', '') || '' %>"
+            />
+          </div>
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_categories">Categories:</label>
+          <div id="recipe_categories">
+            <% recipe.allCategories.forEach(category => { %>
+            <label>
+              <input type="checkbox" name="recipe_categories" value="<%=
+              category.id %>" <% if (recipe.categories.some(cat =>
+              cat.categoryId === category.id)) { %> checked <% } %> required />
+              <%= category.name %>
+            </label>
+            <% }) %>
+          </div>
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_allergens">Allergens:</label>
+          <div class="meal_input_box">
+            <label for="recipe_allergens">Allergens:</label>
+            <div id="recipe_allergens">
+              <% recipe.allAllergens.forEach(allergen => { %>
+              <label>
+                <input type="checkbox" name="recipe_allergens" value="<%=
+                allergen.id %>" <% if (recipe.allergens.some(all =>
+                all.allergenId === allergen.id)) { %> checked <% } %> /> <%=
+                allergen.name %>
+              </label>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+      </form>
+    </main>
+    <script src="js/editRecipe.js"></script>
+  </body>
+</html>

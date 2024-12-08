@@ -1,0 +1,225 @@
+.detail_main {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 121px;
+}
+
+.recipe_category_p {
+  font-size: 18px;
+  color: #a1a1a1;
+  margin: 0;
+  margin-bottom: 40px;
+  span {
+    font-weight: bold;
+    color: #333333;
+  }
+}
+
+.recipe_section {
+  display: flex;
+  flex-direction: column;
+}
+
+.header_wrapper {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+.right {
+  display: flex;
+  margin-right: 15px;
+  gap: 20px;
+}
+
+.menu_title {
+  font-size: 35px;
+  font-weight: bold;
+}
+
+#save_btn,
+#threedots_btn {
+  border: none;
+  background-color: transparent;
+}
+
+.sub_info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 40px;
+  margin-bottom: 40px;
+}
+
+.username {
+  font-size: 18px;
+  margin: 0;
+}
+
+.photo_box {
+  width: 100%;
+}
+
+.photo_box img {
+  width: 100%;
+  height: 70vh;
+  object-fit: cover;
+}
+
+.short_info_box {
+  display: flex;
+  justify-content: center;
+}
+
+.short_info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 90px;
+  margin: 60px 0px;
+}
+
+.short_info_title {
+  font-size: 25px;
+  font-weight: bold;
+  color: #a1a1a1;
+}
+
+.short_info_desc {
+  font-size: 25px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.info_desc {
+  font-size: 20px;
+  margin-bottom: 60px;
+}
+
+.info_wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 60px;
+}
+
+.info_title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.checkbox_list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ingredient_item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox_input {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #3cb371;
+  accent-color: #3cb371;
+}
+
+.checkbox_input:checked {
+  background-color: #3cb371;
+}
+
+.checkbox_label {
+  vertical-align: middle;
+  font-size: 20px;
+  color: #333333;
+}
+
+.inst_box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.inst_item {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+}
+
+.inst_index {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2.5px;
+  padding: 2px;
+  width: 25px;
+  height: 25px;
+  min-width: 25px;
+  min-height: 25px;
+  background-color: #3cb371;
+  color: white;
+  border-radius: 3px;
+}
+
+.inst_desc {
+  font-size: 20px;
+  color: #333333;
+  margin: 0;
+}
+
+/* modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal_content {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 200px;
+  text-align: center;
+}
+
+.modal_button {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: none;
+  cursor: pointer;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+}
+
+#editBtn {
+  color: #333333;
+}
+
+#deleteBtn {
+  color: #ff0000;
+}
+
+#cancelBtn {
+  color: #a1a1a1;
+}
+
+.modal_button:hover {
+  background-color: #ddd;
+}
