@@ -7,6 +7,12 @@
   <body>
     <header><%- include("partials/navbar.ejs") %></header>
     <main class="detail_main">
+      <div style="display: none" userId="<%=userId%>"></div>
+      <div
+        style="display: none"
+        recipeId="<%=recipe.recipeId%>"
+        id="recipeId"
+      ></div>
       <p class="recipe_category_p">
         Recipe > <span><%= recipe.categories.join(' / ') %></span>
       </p>

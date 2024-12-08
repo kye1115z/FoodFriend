@@ -38,6 +38,43 @@ async function fetchRecipes() {
           </div>
         `;
 
+      // save button
+      const saveButton = card.querySelector(".save_button");
+      saveButton.addEventListener("click", async (event) => {
+        event.stopPropagation();
+
+        const userId = document
+          .querySelector("div[userId]")
+          .getAttribute("userId");
+        const recipeId = recipe.recipeId;
+
+        const isSaved = event.target.src.includes("save_checked");
+        const action = isSaved ? "remove" : "save";
+
+        try {
+          const res = await fetch("/toggle-save", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId, recipeId, action }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            const imgElement = event.target;
+            imgElement.src = isSaved
+              ? "images/save.svg"
+              : "images/save_checked.svg";
+            window.location.reload();
+          }
+        } catch (error) {
+          console.error("Error handling save action:", error);
+          alert("An error occurred while saving the recipe.");
+        }
+      });
+
       container.appendChild(card);
     });
   } catch (error) {

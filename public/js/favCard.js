@@ -10,7 +10,9 @@ async function fetchRecipes() {
 
     const recipes = await response.json();
 
-    recipes.forEach((recipe) => {
+    const filteredRecipes = recipes.filter((recipe) => recipe.saved);
+
+    filteredRecipes.forEach((recipe) => {
       const card = document.createElement("button");
       card.className = "recipe_card";
 
@@ -37,6 +39,41 @@ async function fetchRecipes() {
             </div>
           </div>
         `;
+
+      // save button
+      const saveButton = card.querySelector(".save_button");
+      saveButton.addEventListener("click", async (event) => {
+        event.stopPropagation();
+        const userId = document
+          .querySelector("div[userId]")
+          .getAttribute("userId");
+        const recipeId = recipe.recipeId;
+
+        const isSaved = event.target.src.includes("save_checked");
+        const action = isSaved ? "remove" : "save";
+
+        try {
+          const res = await fetch("/toggle-save", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId, recipeId, action }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            const imgElement = event.target;
+            imgElement.src = isSaved
+              ? "images/save.svg"
+              : "images/save_checked.svg";
+          }
+        } catch (error) {
+          console.error("Error handling save action:", error);
+          alert("An error occurred while saving the recipe.");
+        }
+      });
 
       container.appendChild(card);
     });

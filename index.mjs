@@ -62,7 +62,7 @@ app.get("/", async (req, res) => {
       dinner: mealTypeCalories.dinner || 0,
     };
 
-    res.render("home", { greeting, username, totalCalories });
+    res.render("home", { userId, greeting, username, totalCalories });
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while retrieving meal data.");
@@ -159,7 +159,6 @@ app.get("/user", isAuthenticated, async (req, res) => {
       userId,
     ]);
 
-    console.log(rows);
     res.render("user", { userId: userId, user: rows[0] });
   } catch (error) {
     console.error("Error fetching user information:", error);
@@ -427,7 +426,8 @@ app.delete("/meallog-delete", isAuthenticated, async (req, res) => {
 
 // recipe main
 app.get("/recipe", async (req, res) => {
-  res.render("recipe");
+  const userId = req.session.userId;
+  res.render("recipe", { userId });
 });
 
 app.get("/recipeDetails", isAuthenticated, async (req, res) => {
@@ -442,6 +442,7 @@ app.get("/recipeDetails", isAuthenticated, async (req, res) => {
     let category_sql = `SELECT * FROM recipe_categories WHERE recipeId = ?`;
     let ingredient_sql = `SELECT * FROM recipe_ingredients WHERE recipeId = ?`;
     let instruction_sql = `SELECT * FROM recipe_instructions WHERE recipeId = ?`;
+    let favorite_sql = `SELECT * FROM favorites WHERE userId = ? AND recipeId = ?`;
 
     const [recipe] = await conn.query(sql, [recipeId]);
     const [images] = await conn.query(image_sql, [recipeId]);
@@ -449,6 +450,8 @@ app.get("/recipeDetails", isAuthenticated, async (req, res) => {
     const [categories] = await conn.query(category_sql, [recipeId]);
     const [ingredients] = await conn.query(ingredient_sql, [recipeId]);
     const [instructions] = await conn.query(instruction_sql, [recipeId]);
+    const [favorite] = await conn.query(favorite_sql, [userId, recipeId]);
+    const saved = favorite.length > 0;
 
     const allergenNames = await conn.query(
       `SELECT name FROM allergens WHERE id IN (?)`,
@@ -461,6 +464,7 @@ app.get("/recipeDetails", isAuthenticated, async (req, res) => {
 
     const recipeDetails = {
       ...recipe[0],
+      saved: saved,
       image: images.length > 0 ? images[0].imageUrl : null,
       allergens: allergenNames[0].map((a) => a.name),
       categories: categoryNames[0].map((c) => c.name),
@@ -878,6 +882,27 @@ function getGreeting() {
     return "Good Night";
   }
 }
+
+app.post("/toggle-save", isAuthenticated, async (req, res) => {
+  const { userId, recipeId, action } = req.body;
+
+  try {
+    if (action === "save") {
+      const query = "INSERT INTO favorites (userId, recipeId) VALUES (?, ?)";
+      const result = await conn.query(query, [userId, recipeId]);
+    } else if (action === "remove") {
+      const query = "DELETE FROM favorites WHERE userId = ? AND recipeId = ?";
+      const result = await conn.query(query, [userId, recipeId]);
+    } else {
+      res.status(400).json({ message: "Invalid action." });
+    }
+  } catch (error) {
+    console.error("Error saving recipe:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while updating favorite." });
+  }
+});
 
 // db
 app.get("/dbTest", async (req, res) => {

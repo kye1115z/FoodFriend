@@ -47,3 +47,35 @@ deleteBtn.addEventListener("click", async () => {
 cancelBtn.addEventListener("click", () => {
   modal.style.display = "none";
 });
+
+// toggle-save
+document.getElementById("save_btn").addEventListener("click", async () => {
+  const userId = document.querySelector("div[userId]").getAttribute("userId");
+  const recipeid = document.getElementById("recipeId").getAttribute("recipeId");
+
+  const isSaved = document
+    .querySelector("#save_btn img")
+    .src.includes("saveL_checked");
+  const action = isSaved ? "remove" : "save";
+
+  try {
+    const response = await fetch("/toggle-save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, recipeid, action }),
+    });
+
+    if (response.ok) {
+      const imgElement = document.querySelector("#save_btn img");
+      imgElement.src = isSaved
+        ? "images/saveL.svg"
+        : "images/saveL_checked.svg";
+      window.location.reload();
+    }
+  } catch (error) {
+    console.error("Error toggling save action:", error);
+    alert("An error occurred while saving the recipe.");
+  }
+});
