@@ -367,6 +367,7 @@ app.get("/recipe", async (req, res) => {
 
 app.get("/recipeDetails", isAuthenticated, async (req, res) => {
   const recipeId = req.query.recipeId;
+  const userId = req.session.userId;
   const username = req.session.username;
 
   try {
@@ -402,7 +403,11 @@ app.get("/recipeDetails", isAuthenticated, async (req, res) => {
       instructions: instructions.map((instruction) => instruction.description),
     };
 
-    res.render("recipeDetail", { recipe: recipeDetails, username: username });
+    res.render("recipeDetail", {
+      recipe: recipeDetails,
+      username: username,
+      userId: userId,
+    });
   } catch (error) {
     console.error("Error fetching recipe details:", error);
     res.status(500).send("Internal Server Error");
@@ -742,6 +747,45 @@ app.post("/recipe-edit", async (req, res) => {
     res.status(500).json({ success: false, error: "Failed to update recipe" });
   } finally {
     conn.release();
+  }
+});
+
+app.delete("/recipe-delete", async (req, res) => {
+  const { recipeId } = req.body;
+
+  if (!recipeId) {
+    return res.status(400).send("Recipe ID is required");
+  }
+
+  try {
+    await conn.query("DELETE FROM recipe_instructions WHERE recipeId = ?", [
+      recipeId,
+    ]);
+    await conn.query("DELETE FROM recipe_ingredients WHERE recipeId = ?", [
+      recipeId,
+    ]);
+    await conn.query("DELETE FROM recipe_allergens WHERE recipeId = ?", [
+      recipeId,
+    ]);
+    await conn.query("DELETE FROM recipe_categories WHERE recipeId = ?", [
+      recipeId,
+    ]);
+    await conn.query("DELETE FROM recipe_images WHERE recipeId = ?", [
+      recipeId,
+    ]);
+
+    const result = await conn.query("DELETE FROM recipes WHERE recipeId = ?", [
+      recipeId,
+    ]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).send("Recipe not found");
+    }
+
+    res.status(200).send("Recipe deleted successfully!");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while deleting the recipe.");
   }
 });
 

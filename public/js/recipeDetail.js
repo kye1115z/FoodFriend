@@ -33,7 +33,7 @@ deleteBtn.addEventListener("click", async () => {
       const message = await response.text();
       alert(message);
       modal.style.display = "none";
-      window.location.reload();
+      window.location.href = "/recipe";
     } else {
       const errorMessage = await response.text();
       alert(`Error: ${errorMessage}`);

@@ -50,6 +50,7 @@
 
 .instruction_box {
   display: flex;
+  justify-content: space-between;
 }
 
 .instruction_step p {
@@ -59,6 +60,7 @@
 }
 
 .remove_step {
+  width: 30px;
   color: #ff1a1a;
   background-color: transparent;
   border: none;

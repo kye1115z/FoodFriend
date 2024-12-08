@@ -49,15 +49,17 @@ document.addEventListener("DOMContentLoaded", () => {
     newStep.className = "instruction_step";
     newStep.innerHTML = `
         <p>Step ${stepCount}</p>
-        <textarea
-          class="basic_textarea"
-          name="instruction_steps[]"
-          placeholder="Enter step description"
-          required
-        ></textarea>
-        <button type="button" class="remove_step">
-          <img src="images/removeIcon.svg" alt="remove" />
-        </button>
+        <div class="instruction_box">
+          <textarea
+            class="basic_textarea"
+            name="instruction_steps[]"
+            placeholder="Enter step description"
+            required
+          ></textarea>
+          <button type="button" class="remove_step">
+            <img src="images/removeIcon.svg" alt="remove" />
+          </button>
+        </div>
       `;
 
     instructionsContainer.appendChild(newStep);
@@ -139,6 +141,7 @@ document.getElementById("save_btn").addEventListener("click", async () => {
     const result = await response.json();
     if (result.success) {
       alert("Recipe saved successfully!");
+      window.location.href = "/recipe";
     } else {
       alert("Failed to save recipe!");
     }

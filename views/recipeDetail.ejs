@@ -21,12 +21,14 @@
                   alt="save"
                 />
               </button>
+              <% if (userId === recipe.createdBy) { %>
               <button
                 id="threedots_btn"
                 data-recipe-id="<%= recipe.recipeId %>"
               >
                 <img src="images/threedotsL.svg" alt="threedots" />
               </button>
+              <% } %>
             </div>
           </div>
           <div class="sub_info">
