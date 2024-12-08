@@ -588,9 +588,11 @@ app.get("/api/recipes-edit", isAuthenticated, async (req, res) => {
 // recipe search
 app.get("/recipe-search", async (req, res) => {
   const { categoryId } = req.query;
+  const userId = req.session.userId;
+
   try {
     let sql = `
-      SELECT recipes.recipeId, recipes.menuName, recipes.servings, recipes.cookingTime, recipe_images.imageUrl
+      SELECT recipes.*, recipe_images.imageUrl
       FROM recipes
       LEFT JOIN recipe_categories ON recipes.recipeId = recipe_categories.recipeId
       LEFT JOIN recipe_images ON recipes.recipeId = recipe_images.recipeId
@@ -605,7 +607,20 @@ app.get("/recipe-search", async (req, res) => {
         ? await conn.query(sql, [categoryId])
         : await conn.query(sql);
 
-    res.json({ success: true, recipes });
+    const recipeWithSavedStatus = await Promise.all(
+      recipes.map(async (recipe) => {
+        const [favorites] = await conn.query(
+          "SELECT * FROM favorites WHERE recipeId = ? AND userId = ?",
+          [recipe.recipeId, userId]
+        );
+        return {
+          ...recipe,
+          saved: favorites.length > 0,
+        };
+      })
+    );
+
+    res.json({ success: true, recipes: recipeWithSavedStatus });
   } catch (error) {
     console.error("Error fetching recipes:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -707,6 +722,7 @@ app.get("/recipe-edit", isAuthenticated, async (req, res) => {
     let category_sql = `SELECT * FROM recipe_categories WHERE recipeId = ?`;
     let ingredient_sql = `SELECT * FROM recipe_ingredients WHERE recipeId = ?`;
     let instruction_sql = `SELECT * FROM recipe_instructions WHERE recipeId = ?`;
+    let admin_sql = `SELECT username FROM admin WHERE userId = ?`;
 
     const [recipe] = await conn.query(sql, [recipeId]);
     const [images] = await conn.query(image_sql, [recipeId]);
@@ -715,6 +731,7 @@ app.get("/recipe-edit", isAuthenticated, async (req, res) => {
     const [categories] = await conn.query(category_sql, [recipeId]);
     const [ingredients] = await conn.query(ingredient_sql, [recipeId]);
     const [instructions] = await conn.query(instruction_sql, [recipeId]);
+    const [admin] = await conn.query(admin_sql, [recipe[0].createdBy]);
 
     const [allAllergens] = await conn.query("SELECT * FROM allergens");
     const [allCategories] = await conn.query("SELECT * FROM categories");
@@ -729,6 +746,7 @@ app.get("/recipe-edit", isAuthenticated, async (req, res) => {
       instructions: instructions.map((instruction) => instruction.description),
       allAllergens: allAllergens,
       allCategories: allCategories,
+      createdByUsername: admin.length > 0 ? admin[0].username : null,
     };
 
     res.render("editRecipe", { recipe: recipeDetails });
@@ -895,10 +913,12 @@ app.post("/toggle-save", isAuthenticated, async (req, res) => {
   try {
     if (action === "save") {
       const query = "INSERT INTO favorites (userId, recipeId) VALUES (?, ?)";
-      const result = await conn.query(query, [userId, recipeId]);
+      await conn.query(query, [userId, recipeId]);
+      res.status(200).json({ success: true });
     } else if (action === "remove") {
       const query = "DELETE FROM favorites WHERE userId = ? AND recipeId = ?";
-      const result = await conn.query(query, [userId, recipeId]);
+      await conn.query(query, [userId, recipeId]);
+      res.status(200).json({ success: true });
     } else {
       res.status(400).json({ message: "Invalid action." });
     }

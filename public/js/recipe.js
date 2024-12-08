@@ -1,45 +1,5 @@
-async function fetchCategories() {
-  try {
-    const response = await fetch("/api/categories");
-    const categories = await response.json();
-
-    const categorySection = document.getElementById("category_section");
-
-    const allButton = document.querySelector("#category_all");
-    allButton.classList.add("active");
-    allButton.addEventListener("click", () => {
-      document
-        .querySelectorAll(".category_button")
-        .forEach((btn) => btn.classList.remove("active"));
-      allButton.classList.add("active");
-
-      fetchRecipes("all");
-    });
-
-    categories.forEach((category) => {
-      const button = document.createElement("button");
-      button.classList.add("category_button");
-      button.id = category.id;
-      button.innerText = category.name;
-
-      button.addEventListener("click", () => {
-        document
-          .querySelectorAll(".category_button")
-          .forEach((btn) => btn.classList.remove("active"));
-        button.classList.add("active");
-        fetchRecipes(category.id);
-      });
-
-      categorySection.appendChild(button);
-    });
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-  }
-}
-
-fetchCategories();
-
-async function fetchRecipes(categoryId = "all") {
+async function fetchRecipesByCategory(categoryId = "all") {
+  console.log("Fetching recipes for category:", categoryId);
   try {
     const response = await fetch(`/recipe-search?categoryId=${categoryId}`);
     const data = await response.json();
@@ -52,7 +12,7 @@ async function fetchRecipes(categoryId = "all") {
         const card = document.createElement("div");
         card.className = "recipe_card";
         card.innerHTML = `
-          <img src="${recipe.image}" alt="${recipe.name}">
+          <img src="${recipe.imageUrl}" alt="${recipe.name}">
           <button class="save_button">
             <img src="${
               recipe.saved ? "images/save_checked.svg" : "images/save.svg"
@@ -71,6 +31,42 @@ async function fetchRecipes(categoryId = "all") {
           </div>
         `;
 
+        const saveButton = card.querySelector(".save_button");
+        const saveIcon = saveButton.querySelector("img");
+
+        saveButton.addEventListener("click", async (event) => {
+          event.stopPropagation();
+          const userId = document
+            .getElementById("hidden_userId")
+            .getAttribute("userId");
+          const recipeId = recipe.recipeId;
+
+          const isSaved = saveIcon.src.includes("save_checked");
+          const action = isSaved ? "remove" : "save";
+
+          try {
+            const res = await fetch("/toggle-save", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ userId, recipeId, action }),
+            });
+
+            if (res.ok) {
+              saveIcon.src = isSaved
+                ? "/images/save.svg"
+                : "/images/save_checked.svg";
+              window.location.reload();
+            } else {
+              alert("Error saving the recipe.");
+            }
+          } catch (error) {
+            console.error("Error handling save action:", error);
+            alert("An error occurred while saving the recipe.");
+          }
+        });
+
         recipesContainer.appendChild(card);
       });
     } else {
@@ -80,3 +76,45 @@ async function fetchRecipes(categoryId = "all") {
     console.error("Error fetching recipes:", error);
   }
 }
+
+async function fetchCategories() {
+  try {
+    const response = await fetch("/api/categories");
+    const categories = await response.json();
+
+    const categorySection = document.getElementById("category_section");
+
+    const allButton = document.querySelector("#category_all");
+    allButton.classList.add("active");
+    allButton.addEventListener("click", () => {
+      document
+        .querySelectorAll(".category_button")
+        .forEach((btn) => btn.classList.remove("active"));
+      allButton.classList.add("active");
+      document.querySelector(".category_span").innerText = "All";
+      fetchRecipesByCategory("all");
+    });
+
+    categories.forEach((category) => {
+      const button = document.createElement("button");
+      button.classList.add("category_button");
+      button.id = category.id;
+      button.innerText = category.name;
+
+      button.addEventListener("click", () => {
+        document
+          .querySelectorAll(".category_button")
+          .forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+        document.querySelector(".category_span").innerText = category.name;
+        fetchRecipesByCategory(category.id);
+      });
+
+      categorySection.appendChild(button);
+    });
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+  }
+}
+
+fetchCategories();

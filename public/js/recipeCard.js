@@ -40,15 +40,16 @@ async function fetchRecipes() {
 
       // save button
       const saveButton = card.querySelector(".save_button");
+      const saveIcon = saveButton.querySelector("img");
+
       saveButton.addEventListener("click", async (event) => {
         event.stopPropagation();
-
         const userId = document
-          .querySelector("div[userId]")
+          .getElementById("hidden_userId")
           .getAttribute("userId");
         const recipeId = recipe.recipeId;
 
-        const isSaved = event.target.src.includes("save_checked");
+        const isSaved = saveIcon.src.includes("save_checked");
         const action = isSaved ? "remove" : "save";
 
         try {
@@ -60,14 +61,13 @@ async function fetchRecipes() {
             body: JSON.stringify({ userId, recipeId, action }),
           });
 
-          const data = await res.json();
-
           if (res.ok) {
-            const imgElement = event.target;
-            imgElement.src = isSaved
-              ? "images/save.svg"
-              : "images/save_checked.svg";
+            saveIcon.src = isSaved
+              ? "/images/save.svg"
+              : "/images/save_checked.svg";
             window.location.reload();
+          } else {
+            alert("Error saving the recipe.");
           }
         } catch (error) {
           console.error("Error handling save action:", error);

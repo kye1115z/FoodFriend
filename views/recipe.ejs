@@ -8,14 +8,16 @@
   <body>
     <header><%- include("partials/navbar.ejs") %></header>
     <main class="recipe_main">
-      <div style="display: none" userId="<%=userId%>"></div>
+      <div style="display: none" userId="<%=userId%>" id="hidden_userId"></div>
       <section id="category_section" class="category_section">
         <button class="category_button" id="category_all">All</button>
       </section>
       <section class="recipes_section">
         <div class="title_box">
           <p class="title">Results</p>
-          <p class="subtitle">Recipe > <span></span></p>
+          <p class="subtitle">
+            Recipe > <span class="category_span">ALL</span>
+          </p>
         </div>
         <div class="recipes_container" id="recipes_container"></div>
       </section>

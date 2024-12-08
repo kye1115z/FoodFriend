@@ -58,3 +58,8 @@
   color: #a1a1a1;
   margin: 0;
 }
+
+.category_span {
+  font-weight: bold;
+  color: #333;
+}
