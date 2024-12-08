@@ -449,6 +449,7 @@ app.get("/recipeDetails", isAuthenticated, async (req, res) => {
     let ingredient_sql = `SELECT * FROM recipe_ingredients WHERE recipeId = ?`;
     let instruction_sql = `SELECT * FROM recipe_instructions WHERE recipeId = ?`;
     let favorite_sql = `SELECT * FROM favorites WHERE userId = ? AND recipeId = ?`;
+    let admin_sql = `SELECT username FROM admin WHERE userId = ?`;
 
     const [recipe] = await conn.query(sql, [recipeId]);
     const [images] = await conn.query(image_sql, [recipeId]);
@@ -457,6 +458,7 @@ app.get("/recipeDetails", isAuthenticated, async (req, res) => {
     const [ingredients] = await conn.query(ingredient_sql, [recipeId]);
     const [instructions] = await conn.query(instruction_sql, [recipeId]);
     const [favorite] = await conn.query(favorite_sql, [userId, recipeId]);
+    const [admin] = await conn.query(admin_sql, [recipe[0].createdBy]);
     const saved = favorite.length > 0;
 
     const allergenNames = await conn.query(
@@ -476,6 +478,7 @@ app.get("/recipeDetails", isAuthenticated, async (req, res) => {
       categories: categoryNames[0].map((c) => c.name),
       ingredients: ingredients.map((ingredient) => ingredient.ingredient),
       instructions: instructions.map((instruction) => instruction.description),
+      createdByUsername: admin.length > 0 ? admin[0].username : null,
     };
 
     res.render("recipeDetail", {
