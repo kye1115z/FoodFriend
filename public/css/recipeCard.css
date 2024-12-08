@@ -2,7 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 2%;
-  justify-content: center;
+  justify-content: start;
 }
 .recipe_card {
   border: 1px solid #ddd;
@@ -10,11 +10,15 @@
   width: 31.842%;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: relative;
+  background-color: transparent;
+  border: none;
+  padding: 0;
 }
 
 .recipe_card img {
   width: 100%;
   border-radius: 20px 20px 0px 0px;
+  object-fit: cover;
 }
 
 .save_button {
@@ -73,6 +77,6 @@
   border-radius: 50%;
 }
 
-.rating {
-  color: #3cb371;
+.recipe_desc {
+  color: #bebebe;
 }

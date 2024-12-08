@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <link href="/css/addMeal.css" rel="stylesheet" />
+    <link href="/css/addRecipe.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header><%- include("partials/navbar.ejs") %></header>
+    <main class="addMeal_main">
+      <section class="addMeal_header">
+        <p class="addMeal_title">Create New Recipe</p>
+        <button class="small_btn green_btn" id="save_btn">Save</button>
+      </section>
+      <form id="add_menu" method="post">
+        <input type="hidden" name="userId" value="<%= userId %>" />
+        <div class="meal_input_box">
+          <label for="recipe_name_input">Recipe Title:</label>
+          <input
+            class="basic_input"
+            id="recipe_name_input"
+            name="recipe_name"
+            required
+          />
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_photo_input">Recipe Photo:</label>
+          <textarea
+            class="basic_textarea"
+            id="recipe_photo_input"
+            name="recipe_photo"
+            required
+          ></textarea>
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_description">Description:</label>
+          <textarea
+            class="basic_textarea"
+            id="recipe_description"
+            name="recipe_description"
+            required
+          ></textarea>
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_ingredients">Ingredients:</label>
+          <div id="ingredients_container">
+            <div class="ingredient_input_group">
+              <input
+                class="basic_input"
+                name="recipe_ingredients[]"
+                placeholder="Enter an ingredient"
+                required
+              />
+              <button type="button" class="remove_ingredient">
+                <img src="images/removeIcon.svg" alt="remove" />
+              </button>
+            </div>
+          </div>
+          <button type="button" id="add_ingredient_btn">
+            <img src="images/addIconSm.svg" alt="add_ingredient" />
+            Add Ingredient
+          </button>
+        </div>
+        <div class="meal_input_box">
+          <label for="instructions_container">Instructions:</label>
+          <div id="instructions_container">
+            <div class="instruction_step">
+              <p>Step 1</p>
+              <div class="instruction_box">
+                <textarea
+                  class="basic_textarea"
+                  name="instruction_steps[]"
+                  placeholder="Enter step description"
+                  required
+                ></textarea>
+                <button type="button" class="remove_step">
+                  <img src="images/removeIcon.svg" alt="remove" />
+                </button>
+              </div>
+            </div>
+          </div>
+          <button type="button" id="add_step_btn">
+            <img src="images/addIconSm.svg" alt="add_step" />
+            Add Step
+          </button>
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_servings">Servings:</label>
+          <input
+            class="basic_input"
+            id="recipe_servings"
+            name="recipe_servings"
+            placeholder="#"
+            required
+          />
+        </div>
+        <div class="meal_input_box">
+          <label for="cooking_time">Cooking Time:</label>
+          <div class="cooking_time_box">
+            <input
+              class="basic_input"
+              id="cooking_time_hour"
+              name="cooking_time_hour"
+              type="number"
+              placeholder="Hours 0"
+              style="width: 49%"
+            />
+            <input
+              class="basic_input"
+              id="cooking_time_minute"
+              name="cooking_time_minute"
+              type="number"
+              placeholder="Minutes 0"
+              min="0"
+              max="59"
+              style="width: 49%"
+            />
+          </div>
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_categories">Categories:</label>
+          <div id="recipe_categories">
+            <% categories.forEach(category => { %>
+            <label>
+              <input
+                type="checkbox"
+                name="recipe_categories"
+                value="<%= category.id %>"
+                required
+              />
+              <%= category.name %>
+            </label>
+            <% }) %>
+          </div>
+        </div>
+        <div class="meal_input_box">
+          <label for="recipe_allergens">Allergens:</label>
+          <div id="recipe_allergens">
+            <% allergens.forEach(allergen => { %>
+            <label>
+              <input
+                type="checkbox"
+                name="recipe_allergens"
+                value="<%= allergen.id %>"
+                required
+              />
+              <%= allergen.name %>
+            </label>
+            <% }) %>
+          </div>
+        </div>
+      </form>
+    </main>
+    <script src="js/addRecipe.js"></script>
+  </body>
+</html>

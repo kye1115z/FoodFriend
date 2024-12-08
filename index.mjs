@@ -237,7 +237,6 @@ app.post("/meallog-create", isAuthenticated, async (req, res) => {
       userId,
     ];
 
-    const conn = await pool.getConnection();
     await conn.query(sql, sqlParams);
     conn.release();
 
@@ -324,7 +323,6 @@ app.post("/meallog-edit", isAuthenticated, async (req, res) => {
       userId,
     ];
 
-    const conn = await pool.getConnection();
     const [result] = await conn.query(sql, sqlParams);
     conn.release();
 
@@ -341,7 +339,7 @@ app.post("/meallog-edit", isAuthenticated, async (req, res) => {
 
 // Delete Meal Get
 app.delete("/meallog-delete", isAuthenticated, async (req, res) => {
-  const { mealId } = req.body; // 클라이언트에서 mealId를 전달받음
+  const { mealId } = req.body;
 
   if (!mealId) {
     return res.status(400).send("Meal ID is required");
@@ -365,6 +363,156 @@ app.delete("/meallog-delete", isAuthenticated, async (req, res) => {
 // recipe main
 app.get("/recipe", async (req, res) => {
   res.render("recipe");
+});
+
+app.get("/api/categories", async (req, res) => {
+  try {
+    const sql = "SELECT * FROM categories ORDER BY name";
+    const [categories] = await conn.query(sql);
+    res.json(categories);
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/api/recipes", async (req, res) => {
+  const userId = req.session.userId;
+  try {
+    let sql = `SELECT * FROM recipes`;
+    let image_sql = `SELECT * FROM recipe_images`;
+    let favorites_sql = `SELECT * FROM favorites WHERE userId = ?`;
+    const [recipes] = await conn.query(sql);
+    const [images] = await conn.query(image_sql);
+    const [favorites] = await conn.query(favorites_sql, [userId]);
+
+    const favoriteRecipeIds = favorites.map((favorite) => favorite.recipeId);
+
+    const recipesWithImages = recipes.map((recipe) => {
+      const recipeImage = images.find(
+        (img) => img.recipeId === recipe.recipeId
+      );
+      return {
+        ...recipe,
+        image: recipeImage ? recipeImage.imageUrl : null,
+        saved: favoriteRecipeIds.includes(recipe.recipeId),
+      };
+    });
+
+    res.json(recipesWithImages);
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// recipe search
+app.get("/recipe-search", async (req, res) => {
+  const { categoryId } = req.query;
+  try {
+    let sql = `
+      SELECT recipes.recipeId, recipes.menuName, recipes.servings, recipes.cookingTime, recipe_images.imageUrl
+      FROM recipes
+      LEFT JOIN recipe_categories ON recipes.recipeId = recipe_categories.recipeId
+      LEFT JOIN recipe_images ON recipes.recipeId = recipe_images.recipeId
+    `;
+
+    if (categoryId && categoryId !== "all") {
+      sql += ` WHERE recipe_categories.categoryId = ?`;
+    }
+
+    const [recipes] =
+      categoryId && categoryId !== "all"
+        ? await conn.query(sql, [categoryId])
+        : await conn.query(sql);
+
+    res.json({ success: true, recipes });
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+// Add Recipe Get
+app.get("/recipe-create", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+
+  try {
+    let category_sql = `SELECT * FROM categories ORDER BY name`;
+    let allergen_sql = `SELECT * FROM allergens ORDER BY name`;
+    const [categories] = await conn.query(category_sql);
+    const [allergens] = await conn.query(allergen_sql);
+
+    res.render("addRecipe", { userId, categories, allergens });
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Add Recipe Post
+app.post("/recipe-create", async (req, res) => {
+  const {
+    userId,
+    recipe_name,
+    recipe_photo,
+    recipe_description,
+    recipe_servings,
+    cooking_time,
+    recipe_categories,
+    recipe_allergens,
+    recipe_ingredients,
+    instruction_steps,
+  } = req.body;
+
+  try {
+    const [recipeResult] = await conn.query(
+      "INSERT INTO recipes (menuName, description, servings, cookingTime, createdBy) VALUES (?, ?, ?, ?, ?)",
+      [recipe_name, recipe_description, recipe_servings, cooking_time, userId]
+    );
+    const recipeId = recipeResult.insertId;
+
+    await conn.query(
+      "INSERT INTO recipe_images (recipeId, imageUrl) VALUES (?, ?)",
+      [recipeId, recipe_photo]
+    );
+
+    for (const category of recipe_categories) {
+      await conn.query(
+        "INSERT INTO recipe_categories (recipeId, categoryId) VALUES (?, ?)",
+        [recipeId, category]
+      );
+    }
+
+    for (const allergen of recipe_allergens) {
+      await conn.query(
+        "INSERT INTO recipe_allergens (recipeId, allergenId) VALUES (?, ?)",
+        [recipeId, allergen]
+      );
+    }
+
+    for (const ingredient of recipe_ingredients) {
+      await conn.query(
+        "INSERT INTO recipe_ingredients (recipeId, ingredient) VALUES (?, ?)",
+        [recipeId, ingredient]
+      );
+    }
+
+    let stepOrder = 1;
+    for (const step of instruction_steps) {
+      await conn.query(
+        "INSERT INTO recipe_instructions (recipeId, stepOrder, description) VALUES (?, ?, ?)",
+        [recipeId, stepOrder++, step]
+      );
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error inserting recipe:", err);
+    res.status(500).json({ success: false, error: "Failed to save recipe" });
+  } finally {
+    conn.release();
+  }
 });
 
 // Middleware

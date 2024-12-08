@@ -1,0 +1,117 @@
+.ingredient_input_group {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  input {
+    width: 100%;
+  }
+}
+
+.remove_ingredient {
+  color: #ff1a1a;
+  background-color: transparent;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+#add_ingredient_btn {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 10px;
+  background-color: transparent;
+  border: none;
+  color: #3cb371;
+}
+
+.cooking_time_box {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* instruction */
+
+#instructions_container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 15px 0px;
+}
+
+.instruction_step {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.instruction_box {
+  display: flex;
+}
+
+.instruction_step p {
+  font-size: 20px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.remove_step {
+  color: #ff1a1a;
+  background-color: transparent;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+#add_step_btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  border: none;
+  color: #3cb371;
+  cursor: pointer;
+}
+
+/* checkbox */
+#recipe_categories,
+#recipe_allergens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+#recipe_categories label,
+#recipe_allergens label {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#recipe_categories input,
+#recipe_allergens input {
+  accent-color: #3cb371;
+  width: 20px;
+  height: 20px;
+}
+
+#recipe_categories input:focus,
+#recipe_allergens input:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(60, 179, 113, 0.5);
+}
+
+#recipe_categories input:hover,
+#recipe_allergens input:hover {
+  cursor: pointer;
+}
+
+#recipe_categories input:checked,
+#recipe_allergens input:checked {
+  background-color: #3cb371;
+}

@@ -8,7 +8,9 @@
   <body>
     <header><%- include("partials/navbar.ejs") %></header>
     <main class="recipe_main">
-      <section class="category_section">hi</section>
+      <section id="category_section" class="category_section">
+        <button class="category_button" id="category_all">All</button>
+      </section>
       <section class="recipes_section">
         <div class="title_box">
           <p class="title">Results</p>
@@ -17,6 +19,7 @@
         <div class="recipes_container" id="recipes_container"></div>
       </section>
     </main>
+    <script src="js/recipe.js"></script>
     <script src="js/recipeCard.js"></script>
   </body>
 </html>
