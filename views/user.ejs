@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <link href="/css/user.css" rel="stylesheet" />
+    <link href="/css/recipeCard.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header><%- include("partials/navbar.ejs") %></header>
+    <main class="user_main">
+      <section class="info_section">
+        <div class="left">
+          <div class="col_box">
+            <img src="/images/profileExBig.svg" alt="profile" />
+            <a href="/logout" class="logout_link">Log Out</a>
+          </div>
+          <div class="col_box just_left">
+            <p class="username"><%= user.username %></p>
+            <p class="email"><%= user.email %></p>
+          </div>
+        </div>
+        <button class="right" onclick="window.location.href = '/user-edit'">
+          <img src="/images/editIcon.svg" alt="edit" />
+        </button>
+      </section>
+      <section class="fav_section">
+        <p class="fav_title">Favorites</p>
+        <div class="recipes_container" id="recipes_container"></div>
+      </section>
+    </main>
+    <script src="js/favCard.js"></script>
+  </body>
+</html>

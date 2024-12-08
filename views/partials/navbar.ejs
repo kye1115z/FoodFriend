@@ -5,7 +5,7 @@
     <a href="/meallog" class="menu_item" id="meallog_item">Meal Log</a>
     <a href="/recipe" class="menu_item" id="recipe_item">Recipe</a>
     <a href="/recipe-create" class="menu_item">Add Recipe</a>
-    <a href="#" class="menu_item">User</a>
+    <a href="/user" class="menu_item">User</a>
   </div>
   <div class="navbar_right">
     <% if (isLoggedIn) { %>
@@ -43,6 +43,9 @@
       document.querySelector("#meallog_item").classList.add("menu_active");
     }
     if (currentPath === "/recipeDetails") {
+      document.querySelector("#recipe_item").classList.add("menu_active");
+    }
+    if (currentPath === "/user-edit") {
       document.querySelector("#recipe_item").classList.add("menu_active");
     }
   </script>

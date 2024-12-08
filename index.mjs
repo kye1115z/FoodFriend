@@ -150,6 +150,71 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// // user get
+app.get("/user", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+
+  try {
+    const [rows] = await conn.query("SELECT * FROM admin WHERE userId = ?", [
+      userId,
+    ]);
+
+    console.log(rows);
+    res.render("user", { userId: userId, user: rows[0] });
+  } catch (error) {
+    console.error("Error fetching user information:", error);
+    res.status(500).send("An error occurred while fetching user information");
+  }
+});
+
+// // user edit get
+app.get("/user-edit", isAuthenticated, async (req, res) => {
+  const userId = req.session.userId;
+
+  try {
+    const [rows] = await conn.query("SELECT * FROM admin WHERE userId = ?", [
+      userId,
+    ]);
+    res.render("editUser", { userId: userId, user: rows[0] });
+  } catch (error) {
+    console.error("Error fetching user information:", error);
+    res.status(500).send("An error occurred while fetching user information");
+  }
+});
+
+app.post("/user-edit", async (req, res) => {
+  const { userId, username, firstname, lastname, email, image } = req.body;
+
+  if (!userId || !username || !firstname || !lastname || !email) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  try {
+    const sql = `
+      UPDATE admin 
+      SET username = ?, firstName = ?, lastName = ?, email = ?, image = ?
+      WHERE userId = ?
+    `;
+    const [result] = await conn.query(sql, [
+      username,
+      firstname,
+      lastname,
+      email,
+      image,
+      userId,
+    ]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json({ message: "User information updated successfully." });
+  } catch (error) {
+    console.error("Error updating user information:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
 // Meal Log Mainpage Get
 app.get("/meallog", isAuthenticated, async (req, res) => {
   res.render("mealLog");

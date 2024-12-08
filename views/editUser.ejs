@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head.ejs") %>
+    <link href="/css/addMeal.css" rel="stylesheet" />
+    <link href="/css/user.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header><%- include("partials/navbar.ejs") %></header>
+    <main class="addMeal_main">
+      <section class="addMeal_header">
+        <p class="addMeal_title">Edit my Info</p>
+        <button class="small_btn green_btn" id="save_btn">Save</button>
+      </section>
+      <form id="edit_user" method="post">
+        <input type="hidden" name="userId" value="<%= userId %>" />
+        <div class="meal_input_box">
+          <label for="username">Username:</label>
+          <input
+            class="basic_input"
+            id="username"
+            name="username"
+            value="<%= user.username %>"
+            required
+          />
+        </div>
+        <div class="meal_input_box">
+          <div class="name_box">
+            <div style="display: flex; flex-direction: column; width: 100%">
+              <label for="firstname">First Name:</label>
+              <input
+                class="basic_input"
+                id="firstname"
+                name="firstname"
+                value="<%= user.firstName %>"
+                required
+              />
+            </div>
+            <div style="display: flex; flex-direction: column; width: 100%">
+              <label for="lastname">Last Name:</label>
+              <input
+                class="basic_input"
+                id="lastname"
+                name="lastname"
+                value="<%= user.lastName %>"
+                required
+              />
+            </div>
+          </div>
+        </div>
+        <div class="meal_input_box">
+          <label for="email">Email:</label>
+          <textarea class="basic_textarea" id="email" name="email" required>
+<%= user.email %></textarea
+          >
+        </div>
+        <div class="meal_input_box">
+          <label for="password" class="password">Password:</label>
+          <input class="basic_input" id="password" name="password" disabled />
+        </div>
+        <div class="meal_input_box">
+          <label for="image">Image:</label>
+          <textarea class="basic_textarea" id="image" name="image">
+<% if (user.image != null) { %>
+    <%=user.image %>  
+<% } %></textarea
+          >
+        </div>
+      </form>
+    </main>
+    <script src="js/user.js"></script>
+  </body>
+</html>

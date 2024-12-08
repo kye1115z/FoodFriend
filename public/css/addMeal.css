@@ -28,6 +28,13 @@
   padding: 50px 420px;
 }
 
+#edit_user {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 50px 420px;
+}
+
 .meal_input_box {
   display: flex;
   flex-direction: column;
