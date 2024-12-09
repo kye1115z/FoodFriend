@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (button) {
     button.addEventListener("click", () => {
       recipeId = button.getAttribute("data-recipe-id");
-      console.log(recipeId);
       handleThreedots(recipeId);
     });
   } else {
