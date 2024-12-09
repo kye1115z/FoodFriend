@@ -204,6 +204,8 @@ app.post("/user-edit", async (req, res) => {
     ]);
 
     if (result.affectedRows === 0) {
+      req.session.username = username;
+      req.session.userId = userId;
       return res.status(404).json({ message: "User not found." });
     }
 

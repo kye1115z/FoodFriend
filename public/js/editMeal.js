@@ -38,3 +38,23 @@ document.getElementById("save_btn").addEventListener("click", async (event) => {
     alert("An error occurred while modifying the meal.");
   }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const timeSelect = document.getElementById("time_format_select");
+  const timeFormat = timeSelect.getAttribute("time-format");
+  const timeOptions = timeSelect.querySelectorAll("option");
+  timeOptions.forEach((option) => {
+    if (option.value === timeFormat) {
+      option.selected = true;
+    }
+  });
+
+  const mealSelect = document.getElementById("meal_type_select");
+  const mealFormat = mealSelect.getAttribute("meal-type");
+  const mealOptions = mealSelect.querySelectorAll("option");
+  mealOptions.forEach((option) => {
+    if (option.value === mealFormat) {
+      option.selected = true;
+    }
+  });
+});

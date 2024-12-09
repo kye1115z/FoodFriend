@@ -9,8 +9,13 @@ async function fetchRecipesByCategory(categoryId = "all") {
       recipesContainer.innerHTML = "";
 
       data.recipes.forEach((recipe) => {
-        const card = document.createElement("div");
+        const card = document.createElement("button");
         card.className = "recipe_card";
+
+        card.addEventListener("click", () => {
+          window.location.href = `/recipeDetails?recipeId=${recipe.recipeId}`;
+        });
+
         card.innerHTML = `
           <img src="${recipe.imageUrl}" alt="${recipe.name}">
           <button class="save_button">
