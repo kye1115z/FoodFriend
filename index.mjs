@@ -331,6 +331,9 @@ app.get("/meallog-edit", isAuthenticated, async (req, res) => {
     let [mealData] = await conn.query(sql, [mealId]);
 
     const eatingTime = new Date(mealData[0].eatingTime);
+    const year = eatingTime.getFullYear();
+    const month = eatingTime.getMonth() + 1;
+    const day = eatingTime.getDate();
     const hours = eatingTime.getHours();
     const minutes = eatingTime.getMinutes();
     const isPM = hours >= 12;
@@ -342,6 +345,9 @@ app.get("/meallog-edit", isAuthenticated, async (req, res) => {
     res.render("editMeal", {
       userId,
       mealData: mealData[0],
+      eatingTimeYear: year,
+      eatingTimeMonth: month,
+      eatingTimeDay: day,
       eatingTimeHour: formattedHour,
       eatingTimeMinute: formattedMinute,
       timeFormat: timeFormat,
@@ -359,6 +365,9 @@ app.post("/meallog-edit", isAuthenticated, async (req, res) => {
   const {
     menu_name,
     meal_photo,
+    eating_date_year,
+    eating_date_month,
+    eating_date_day,
     eating_time_hour,
     eating_time_minute,
     time_format,
@@ -378,7 +387,15 @@ app.post("/meallog-edit", isAuthenticated, async (req, res) => {
     }
 
     const eatingTime = moment()
-      .set({ hour, minute, second: 0, millisecond: 0 })
+      .set({
+        year: eating_date_year,
+        month: eating_date_month - 1,
+        date: eating_date_day,
+        hour: hour,
+        minute: minute,
+        second: 0,
+        millisecond: 0,
+      })
       .format("YYYY-MM-DD HH:mm:ss");
 
     const sql = `UPDATE meals 

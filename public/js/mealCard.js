@@ -13,7 +13,6 @@ function generateMealCards(meals, container) {
   meals.forEach((meal) => {
     const card = document.createElement("div");
     card.className = "meal_card";
-
     const formattedTime = new Date(meal.eatingTime).toLocaleString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
@@ -76,7 +75,7 @@ cancelBtn.addEventListener("click", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   const today = new Date();
-  const todayString = today.toISOString().split("T")[0];
+  const todayString = today.toLocaleDateString("en-CA");
   fetch(`/meallog/data?date=${todayString}`)
     .then((response) => response.json())
     .then((data) => {

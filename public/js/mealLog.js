@@ -13,6 +13,7 @@ function getWeekDates(baseDate) {
   for (let i = 0; i < 7; i++) {
     const date = new Date(startOfWeek);
     date.setDate(startOfWeek.getDate() + i);
+
     weekDates.push({
       weekday: date
         .toLocaleDateString("en-US", { weekday: "short" })
@@ -43,7 +44,7 @@ function renderCalendar(baseDate) {
         .forEach((d) => d.classList.remove("selected"));
       dayDiv.classList.add("selected");
 
-      let selectedDate = day.fullDate.toISOString().split("T")[0];
+      let selectedDate = day.fullDate.toLocaleDateString("en-CA");
       fetchMealsByDate(selectedDate);
     });
 
