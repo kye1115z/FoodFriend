@@ -4,9 +4,17 @@ const editBtn = document.getElementById("editBtn");
 const deleteBtn = document.getElementById("deleteBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 
-document.getElementById("threedots_btn").addEventListener("click", (event) => {
-  recipeId = event.target.getAttribute("data-recipe-id");
-  handleThreedots(recipeId);
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById("threedots_btn");
+  if (button) {
+    button.addEventListener("click", () => {
+      recipeId = button.getAttribute("data-recipe-id");
+      console.log(recipeId);
+      handleThreedots(recipeId);
+    });
+  } else {
+    console.error("Button with ID 'threedots_btn' not found.");
+  }
 });
 
 function handleThreedots(currentRecipeId) {
