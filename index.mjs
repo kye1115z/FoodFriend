@@ -42,8 +42,9 @@ app.get("/", async (req, res) => {
   const userId = req.session.userId;
 
   let sql = `SELECT calories, userId, mealType 
-            FROM meals
-            WHERE userId = ?`;
+             FROM meals
+             WHERE userId = ? AND DATE(eatingTime) = CURDATE()`;
+
   try {
     let [mealData] = await conn.query(sql, [userId]);
 
