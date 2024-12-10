@@ -480,14 +480,22 @@ app.get("/recipeDetails", isAuthenticated, async (req, res) => {
     const [admin] = await conn.query(admin_sql, [recipe[0].createdBy]);
     const saved = favorite.length > 0;
 
-    const allergenNames = await conn.query(
-      `SELECT name FROM allergens WHERE id IN (?)`,
-      [allergens.map((a) => a.allergenId)]
-    );
-    const categoryNames = await conn.query(
-      `SELECT name FROM categories WHERE id IN (?)`,
-      [categories.map((c) => c.categoryId)]
-    );
+    const allergenIds = allergens.map((a) => a.allergenId);
+    const categoryIds = categories.map((c) => c.categoryId);
+
+    const allergenNames =
+      allergenIds.length > 0
+        ? await conn.query(`SELECT name FROM allergens WHERE id IN (?)`, [
+            allergenIds,
+          ])
+        : [[]];
+
+    const categoryNames =
+      categoryIds.length > 0
+        ? await conn.query(`SELECT name FROM categories WHERE id IN (?)`, [
+            categoryIds,
+          ])
+        : [[]];
 
     const recipeDetails = {
       ...recipe[0],
